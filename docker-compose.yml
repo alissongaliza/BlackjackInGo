@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+
+  server:
+    build: .
+    container_name: server
+    ports:
+      - "8080:8080"
+    networks: 
+      - base
+    volumes:
+      - ./:/app
+
+
+networks:
+  base:
