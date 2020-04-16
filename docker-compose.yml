@@ -11,7 +11,11 @@ services:
       - base
     volumes:
       - ./:/app
+    restart: always
+
 
 
 networks:
   base:
+
+    
