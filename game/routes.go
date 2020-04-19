@@ -17,25 +17,26 @@ func findGame(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "finding games...")
 }
 
-func createGame(userId int, w http.ResponseWriter) models.Game {
-	fmt.Println("creating game...")
-	if !models.IsUserValid(userId) {
-		fmt.Fprintf(w, "User of id %d not in the database.", userId)
+func createGame(playerId int, dif models.Difficuty, w http.ResponseWriter) models.Game {
+	fmt.Println("creating game...", playerId, dif)
+	if !models.IsPlayerValid(playerId) {
+		fmt.Fprintf(w, "Player of id %d not in the database.", playerId)
 	}
-	var game models.Game
+	game := models.NewGame(playerId, dif)
 	return game
 }
 
 func startGame(w http.ResponseWriter, r *http.Request) {
 	var data struct {
-		Id int
+		Id  int
+		Dif models.Difficuty
 	}
 	json.NewDecoder(r.Body).Decode(&data)
-	createGame(data.Id, w)
+	newGame := createGame(data.Id, data.Dif, w)
+	json.NewEncoder(w).Encode(newGame.Id)
 }
 
 func GameRouter() chi.Router {
-	// func GameRouter() http.Handler {
 	r := chi.NewRouter()
 	r.Get("/", listGames)
 	r.Get("/{id}", findGame)
