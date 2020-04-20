@@ -32,7 +32,7 @@ type HardHouse struct {
 	Hand      *Hand
 }
 
-func (easy EasyHouse) hit(gameId int) {
+func (easy EasyHouse) hit(gameId int, faceUp bool) {
 	fmt.Println("player hit!")
 }
 
@@ -44,7 +44,7 @@ func (easy EasyHouse) doubleDown(gameId int) {
 	fmt.Println("player doubleDown!")
 }
 
-func (medium MediumHouse) hit(gameId int) {
+func (medium MediumHouse) hit(gameId int, faceUp bool) {
 	fmt.Println("player hit!")
 }
 func (medium MediumHouse) stand(gameId int) {
@@ -54,7 +54,7 @@ func (medium MediumHouse) doubleDown(gameId int) {
 	fmt.Println("player doubleDown!")
 }
 
-func (hard HardHouse) hit(gameId int) {
+func (hard HardHouse) hit(gameId int, faceUp bool) {
 	fmt.Println("player hit!")
 }
 
