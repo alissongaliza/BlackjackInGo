@@ -17,6 +17,7 @@ type Card struct {
 	Suit     SuitType
 	Name     string
 	isNumber bool
+	isFaceUp bool
 }
 
 type Hand struct {
@@ -24,7 +25,15 @@ type Hand struct {
 	Score int
 }
 
+func NewHand() Hand {
+	return Hand{make([]Card, 0), 0}
+}
+
 func (card Card) value(hand Hand) int {
+	if !card.isFaceUp {
+		return 0
+	}
+
 	if card.isNumber {
 		// convert from string to int
 		if s, err := strconv.Atoi(card.Name); err == nil {
