@@ -27,11 +27,12 @@ func GetDb() DB {
 		instance = make(DB, 2)
 		instance[PlayerConst] = make(map[int]interface{})
 		instance[GameConst] = make(map[int]interface{})
-		instance[PlayerConst][1] = Player{"Alisson", 1, 18, nil}
+		instance[PlayerConst][1] = Player{"Alisson", 1, 18, nil, 100}
 
-		cards := make([]Card, 0)
-		hand := Hand{cards, 0}
-		instance[GameConst][1] = EasyHouse{"test", easy, &hand}
+		player := instance[PlayerConst][1].(Player)
+		house := getHouse("easy", player.Name)
+		cards := NewDeck()
+		instance[GameConst][1] = Game{1, player, house, cards, 0, false}
 
 	})
 
@@ -106,21 +107,39 @@ func findPlayerOfId(id int) *Player {
 
 	player, ok := db[PlayerConst][id].(Player)
 	if !ok {
-		return nil
+		panic(fmt.Sprintf("Player of id %d not found", id))
 	}
 	return &player
 }
 
-func getHouse(dif Difficuty, opName string) (house House) {
+func findGameOfId(id int) *Game {
+	db := GetDb()
 
+	game, ok := db[GameConst][id].(Game)
+	if !ok {
+		panic(fmt.Sprintf("Game of id %d not found", id))
+	}
+	return &game
+}
+
+func getHouse(dif Difficuty, opName string) (house House) {
+	hand := NewHand()
 	switch dif {
 	case easy:
-		house = EasyHouse{opName, easy, nil}
+		house = EasyHouse{opName, easy, &hand}
 	case medium:
-		house = MediumHouse{opName, medium, nil}
+		house = MediumHouse{opName, medium, &hand}
 	case hard:
-		house = HardHouse{opName, hard, nil}
+		house = HardHouse{opName, hard, &hand}
 	}
 
 	return
+}
+
+func StartGame(game *Game) Game {
+	game.House.hit(game.Id, true)
+	game.Player.hit(game.Id, true)
+	game.House.hit(game.Id, false)
+	game.Player.hit(game.Id, true)
+	return *game
 }
