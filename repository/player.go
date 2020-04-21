@@ -23,10 +23,9 @@ func NewPlayer(name string, age int) (newPlayer Player) {
 	return newPlayer
 }
 
-func (player Player) hit(gameId int, faceUp bool) {
+func (player Player) Hit(gameId int, faceUp bool) {
 	fmt.Println("player hit!")
 	game := findGameOfId(gameId)
-	fmt.Println(game)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards))
 	card := game.Cards[index]
@@ -36,15 +35,19 @@ func (player Player) hit(gameId int, faceUp bool) {
 	if faceUp {
 		card.isFaceUp = true
 	}
-	// hand := *game.Player.Hand
-	// hand.Cards.append(card)
-
+	// assign the new cards to the player's hand
+	hand := game.Player.Hand
+	hand.Cards = append(hand.Cards, card)
+	hand.Score += card.value(*hand)
+	// finish turn
+	game.isPlayerTurn = false
+	fmt.Println(hand)
 }
 
-func (player Player) stand(gameId int) {
+func (player Player) Stand(gameId int) {
 	fmt.Println("player stand!")
 }
 
-func (player Player) doubleDown(gameId int) {
+func (player Player) DoubleDown(gameId int) {
 	fmt.Println("player doubleDown!")
 }
