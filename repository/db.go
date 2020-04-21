@@ -27,10 +27,13 @@ func GetDb() DB {
 		instance = make(DB, 2)
 		instance[PlayerConst] = make(map[int]interface{})
 		instance[GameConst] = make(map[int]interface{})
-		instance[PlayerConst][1] = Player{"Alisson", 1, 18, nil, 100}
 
+		hand1 := NewHand()
+		hand2 := NewHand()
+		instance[PlayerConst][1] = Player{"Alisson", 1, 18, &hand1, 100}
 		player := instance[PlayerConst][1].(Player)
-		house := getHouse("easy", player.Name)
+		opponentName := fmt.Sprintf("%s's opponent", player.Name)
+		house := EasyHouse{opponentName, easy, &hand2}
 		cards := NewDeck()
 		instance[GameConst][1] = Game{1, player, house, cards, 0, false}
 
@@ -92,9 +95,8 @@ func addNewGame(newGame *Game) bool {
 }
 
 func IsPlayerValid(playerId int) bool {
-	fmt.Println("IsPlayerValid")
+	fmt.Println("IsPlayerValid reached", playerId)
 	db := GetDb()
-	// fmt.Println(db)
 
 	if value, present := db[PlayerConst][playerId].(Player); present && value.Age >= 18 {
 		return true
@@ -102,7 +104,7 @@ func IsPlayerValid(playerId int) bool {
 	return false
 }
 
-func findPlayerOfId(id int) *Player {
+func FindPlayerOfId(id int) *Player {
 	db := GetDb()
 
 	player, ok := db[PlayerConst][id].(Player)
@@ -137,9 +139,9 @@ func getHouse(dif Difficuty, opName string) (house House) {
 }
 
 func StartGame(game *Game) Game {
-	game.House.hit(game.Id, true)
-	game.Player.hit(game.Id, true)
-	game.House.hit(game.Id, false)
-	game.Player.hit(game.Id, true)
+	game.House.Hit(game.Id, true)
+	game.Player.Hit(game.Id, true)
+	game.House.Hit(game.Id, false)
+	game.Player.Hit(game.Id, true)
 	return *game
 }
