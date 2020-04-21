@@ -1,7 +1,9 @@
 package models
 
 import (
-	"strconv"
+	"fmt"
+
+	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
 type SuitType string
@@ -35,10 +37,8 @@ func (card Card) value(hand Hand) int {
 	}
 
 	if card.isNumber {
-		// convert from string to int
-		if s, err := strconv.Atoi(card.Name); err == nil {
-			return s
-		}
+		fmt.Println(card)
+		return utils.StringToInt(card.Name)
 	}
 
 	if card.Name == "ace" {
