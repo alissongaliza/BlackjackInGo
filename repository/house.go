@@ -1,6 +1,10 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/alissongaliza/BlackjackInGo/utils"
+)
 
 type Difficuty string
 
@@ -32,36 +36,51 @@ type HardHouse struct {
 	Hand      *Hand
 }
 
-func (easy EasyHouse) hit(gameId int, faceUp bool) {
-	fmt.Println("player hit!")
+func (easy EasyHouse) Hit(gameId int, faceUp bool) {
+	game := findGameOfId(gameId)
+	//pop an element from the cards array
+	index := utils.GetRandomNumber(0, len(game.Cards))
+	card := game.Cards[index]
+	game.Cards[index] = game.Cards[len(game.Cards)-1]
+	game.Cards = game.Cards[:len(game.Cards)-1]
+
+	if faceUp {
+		card.isFaceUp = true
+	}
+	// assign the new cards to the houses's hand
+	house := game.House.(EasyHouse)
+	hand := house.Hand
+	hand.Cards = append(hand.Cards, card)
+	// finish turn
+	game.isPlayerTurn = true
 }
 
-func (easy EasyHouse) stand(gameId int) {
-	fmt.Println("player stand!")
+func (easy EasyHouse) Stand(gameId int) {
+	fmt.Println("EasyHouse stand!")
 }
 
-func (easy EasyHouse) doubleDown(gameId int) {
-	fmt.Println("player doubleDown!")
+func (easy EasyHouse) DoubleDown(gameId int) {
+	fmt.Println("EasyHouse doubleDown!")
 }
 
-func (medium MediumHouse) hit(gameId int, faceUp bool) {
-	fmt.Println("player hit!")
+func (medium MediumHouse) Hit(gameId int, faceUp bool) {
+	fmt.Println("MediumHouse hit!")
 }
-func (medium MediumHouse) stand(gameId int) {
-	fmt.Println("player stand!")
+func (medium MediumHouse) Stand(gameId int) {
+	fmt.Println("MediumHouse stand!")
 }
-func (medium MediumHouse) doubleDown(gameId int) {
-	fmt.Println("player doubleDown!")
-}
-
-func (hard HardHouse) hit(gameId int, faceUp bool) {
-	fmt.Println("player hit!")
+func (medium MediumHouse) DoubleDown(gameId int) {
+	fmt.Println("MediumHouse doubleDown!")
 }
 
-func (hard HardHouse) stand(gameId int) {
-	fmt.Println("player stand!")
+func (hard HardHouse) Hit(gameId int, faceUp bool) {
+	fmt.Println("HardHouse hit!")
 }
 
-func (hard HardHouse) doubleDown(gameId int) {
-	fmt.Println("player doubleDown!")
+func (hard HardHouse) Stand(gameId int) {
+	fmt.Println("HardHouse stand!")
+}
+
+func (hard HardHouse) DoubleDown(gameId int) {
+	fmt.Println("HardHouse doubleDown!")
 }
