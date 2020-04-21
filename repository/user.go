@@ -1,7 +1,7 @@
 package models
 
 type User interface {
-	hit(gameId int, faceUp bool)
-	stand(gameId int)
-	doubleDown(gameId int)
+	Hit(gameId int, faceUp bool)
+	Stand(gameId int)
+	DoubleDown(gameId int)
 }
