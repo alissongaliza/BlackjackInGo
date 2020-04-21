@@ -1,7 +1,5 @@
 package models
 
-import "fmt"
-
 type Game struct {
 	Id           int
 	Player       Player
@@ -14,7 +12,7 @@ type Game struct {
 const GameConst Actors = "game"
 
 func NewGame(playerId int, dif Difficuty, bet int) Game {
-	player := findPlayerOfId(playerId)
+	player := FindPlayerOfId(playerId)
 	if player.Chips < bet {
 		panic("Player cant Bet. Chips are lower than current bet.")
 	}
@@ -30,22 +28,22 @@ func NewGame(playerId int, dif Difficuty, bet int) Game {
 }
 
 func NewDeck() (newDeck []Card) {
-	base := 0
 	for _, suit := range []SuitType{hearts, spades, clubs, diamonds} {
-		newDeck[0+base] = Card{"2", string(suit), true, false}
-		newDeck[1+base] = Card{"3", string(suit), true, false}
-		newDeck[2+base] = Card{"4", string(suit), true, false}
-		newDeck[3+base] = Card{"5", string(suit), true, false}
-		newDeck[4+base] = Card{"6", string(suit), true, false}
-		newDeck[5+base] = Card{"8", string(suit), true, false}
-		newDeck[6+base] = Card{"7", string(suit), true, false}
-		newDeck[7+base] = Card{"9", string(suit), true, false}
-		newDeck[8+base] = Card{"10", string(suit), true, false}
-		newDeck[9+base] = Card{"j", string(suit), false, false}
-		newDeck[10+base] = Card{"q", string(suit), false, false}
-		newDeck[11+base] = Card{"k", string(suit), false, false}
-		newDeck[12+base] = Card{"ace", string(suit), false, false}
-		base += 13
+		newDeck = append(newDeck,
+			Card{suit, "2", true, false},
+			Card{suit, "3", true, false},
+			Card{suit, "4", true, false},
+			Card{suit, "5", true, false},
+			Card{suit, "6", true, false},
+			Card{suit, "8", true, false},
+			Card{suit, "7", true, false},
+			Card{suit, "9", true, false},
+			Card{suit, "10", true, false},
+			Card{suit, "j", false, false},
+			Card{suit, "q", false, false},
+			Card{suit, "k", false, false},
+			Card{suit, "ace", false, false},
+		)
 	}
 	return
 }
