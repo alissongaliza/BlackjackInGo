@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
@@ -37,7 +35,6 @@ func (card Card) value(hand Hand) int {
 	}
 
 	if card.isNumber {
-		fmt.Println(card)
 		return utils.StringToInt(card.Name)
 	}
 
