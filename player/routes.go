@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/alissongaliza/BlackjackInGo/utils"
+
 	models "github.com/alissongaliza/BlackjackInGo/repository"
 
 	"github.com/go-chi/chi"
@@ -35,30 +37,34 @@ func addPlayer(w http.ResponseWriter, r *http.Request) {
 
 func hit(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("hit called")
-	var id int
-	json.NewDecoder(r.Body).Decode(&id)
-
+	userId := utils.StringToInt(chi.URLParam(r, "id"))
+	var hitRequest struct {
+		GameId int
+	}
+	json.NewDecoder(r.Body).Decode(&hitRequest)
+	user := models.FindPlayerOfId(userId)
+	user.Hit(hitRequest.GameId, true)
 	// json.NewEncoder(w).Encode(newPlayer)
 
 }
 
 func stand(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("stand called")
-	var data models.Player
-	json.NewDecoder(r.Body).Decode(&data)
-
-	newPlayer := models.NewPlayer(data.Name, data.Age)
-	json.NewEncoder(w).Encode(newPlayer)
+	userId := utils.StringToInt(chi.URLParam(r, "id"))
+	var gameId int
+	json.NewDecoder(r.Body).Decode(&gameId)
+	player := models.FindPlayerOfId(userId)
+	player.Stand(gameId)
 
 }
 
 func doubleDown(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("doubleDown called")
-	var data models.Player
-	json.NewDecoder(r.Body).Decode(&data)
-
-	newPlayer := models.NewPlayer(data.Name, data.Age)
-	json.NewEncoder(w).Encode(newPlayer)
+	userId := utils.StringToInt(chi.URLParam(r, "id"))
+	var gameId int
+	json.NewDecoder(r.Body).Decode(&gameId)
+	user := models.FindPlayerOfId(userId)
+	user.DoubleDown(gameId)
 
 }
 
