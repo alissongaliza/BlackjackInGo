@@ -23,9 +23,12 @@ func NewPlayer(name string, age int) (newPlayer Player) {
 	return newPlayer
 }
 
-func (player Player) Hit(gameId int, faceUp bool) {
-	fmt.Println("player hit!")
+func (player *Player) Hit(gameId int, faceUp bool) {
 	game := findGameOfId(gameId)
+	fmt.Println("player hit!", gameId, game.GameState)
+	if game.GameState != playing {
+		panic(fmt.Sprintf("Game is already over. Player %s", game.GameState))
+	}
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards))
 	card := game.Cards[index]
@@ -37,11 +40,14 @@ func (player Player) Hit(gameId int, faceUp bool) {
 	}
 	// assign the new cards to the player's hand
 	hand := game.Player.Hand
+	if hand.Score+card.value(*hand) > 21 {
+		game.GameState = lost
+	}
 	hand.Cards = append(hand.Cards, card)
 	hand.Score += card.value(*hand)
 	// finish turn
 	game.isPlayerTurn = false
-	fmt.Println(hand)
+	fmt.Println(hand, game.GameState)
 }
 
 func (player Player) Stand(gameId int) {

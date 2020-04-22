@@ -7,7 +7,17 @@ type Game struct {
 	Cards        []Card
 	Bet          int
 	isPlayerTurn bool
+	GameState    GameState
 }
+
+type GameState string
+
+const (
+	won     GameState = "won"
+	lost    GameState = "lost"
+	draw    GameState = "draw"
+	playing GameState = "playing"
+)
 
 const GameConst Actors = "game"
 
@@ -22,7 +32,7 @@ func NewGame(playerId int, dif Difficuty, bet int) Game {
 	house := getHouse(dif, player.Name)
 	cards := NewDeck()
 
-	newGame := Game{-1, *player, house, cards, bet, false}
+	newGame := Game{-1, *player, house, cards, bet, false, playing}
 	addNewGame(&newGame)
 	return newGame
 }
