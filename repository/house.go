@@ -36,7 +36,8 @@ type HardHouse struct {
 	Hand      *Hand
 }
 
-func (easy EasyHouse) Hit(gameId int, faceUp bool) {
+func (easy *EasyHouse) Hit(gameId int, faceUp bool) {
+	fmt.Println("EasyHouse hit reached")
 	game := findGameOfId(gameId)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards))
@@ -48,39 +49,39 @@ func (easy EasyHouse) Hit(gameId int, faceUp bool) {
 		card.isFaceUp = true
 	}
 	// assign the new cards to the houses's hand
-	house := game.House.(EasyHouse)
+	house := game.House.(*EasyHouse)
 	hand := house.Hand
 	hand.Cards = append(hand.Cards, card)
 	// finish turn
 	game.isPlayerTurn = true
 }
 
-func (easy EasyHouse) Stand(gameId int) {
+func (easy *EasyHouse) Stand(gameId int) {
 	fmt.Println("EasyHouse stand!")
 }
 
-func (easy EasyHouse) DoubleDown(gameId int) {
+func (easy *EasyHouse) DoubleDown(gameId int) {
 	fmt.Println("EasyHouse doubleDown!")
 }
 
-func (medium MediumHouse) Hit(gameId int, faceUp bool) {
+func (medium *MediumHouse) Hit(gameId int, faceUp bool) {
 	fmt.Println("MediumHouse hit!")
 }
-func (medium MediumHouse) Stand(gameId int) {
+func (medium *MediumHouse) Stand(gameId int) {
 	fmt.Println("MediumHouse stand!")
 }
-func (medium MediumHouse) DoubleDown(gameId int) {
+func (medium *MediumHouse) DoubleDown(gameId int) {
 	fmt.Println("MediumHouse doubleDown!")
 }
 
-func (hard HardHouse) Hit(gameId int, faceUp bool) {
+func (hard *HardHouse) Hit(gameId int, faceUp bool) {
 	fmt.Println("HardHouse hit!")
 }
 
-func (hard HardHouse) Stand(gameId int) {
+func (hard *HardHouse) Stand(gameId int) {
 	fmt.Println("HardHouse stand!")
 }
 
-func (hard HardHouse) DoubleDown(gameId int) {
+func (hard *HardHouse) DoubleDown(gameId int) {
 	fmt.Println("HardHouse doubleDown!")
 }
