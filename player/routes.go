@@ -29,6 +29,7 @@ func addPlayer(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&data)
 
 	newPlayer := models.NewPlayer(data.Name, data.Age)
+	newPlayer = models.GetPlayerDb().Create(newPlayer)
 	json.NewEncoder(w).Encode(newPlayer)
 	// fmt.Fprintf(w, "adding player...")
 	// fmt.Fprintf(w, "%+v", newPlayer)
@@ -42,7 +43,7 @@ func hit(w http.ResponseWriter, r *http.Request) {
 		GameId int
 	}
 	json.NewDecoder(r.Body).Decode(&hitRequest)
-	user := models.FindPlayerOfId(userId)
+	user := models.GetPlayerDb().Get(userId)
 	user.Hit(hitRequest.GameId, true)
 	// json.NewEncoder(w).Encode(newPlayer)
 
@@ -53,7 +54,7 @@ func stand(w http.ResponseWriter, r *http.Request) {
 	userId := utils.StringToInt(chi.URLParam(r, "id"))
 	var gameId int
 	json.NewDecoder(r.Body).Decode(&gameId)
-	player := models.FindPlayerOfId(userId)
+	player := models.GetPlayerDb().Get(userId)
 	player.Stand(gameId)
 
 }
@@ -63,7 +64,7 @@ func doubleDown(w http.ResponseWriter, r *http.Request) {
 	userId := utils.StringToInt(chi.URLParam(r, "id"))
 	var gameId int
 	json.NewDecoder(r.Body).Decode(&gameId)
-	user := models.FindPlayerOfId(userId)
+	user := models.GetPlayerDb().Get(userId)
 	user.DoubleDown(gameId)
 
 }

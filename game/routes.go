@@ -24,7 +24,7 @@ func createGame(playerId int, dif models.Difficuty, bet int, w http.ResponseWrit
 	}
 	fmt.Println("Player is valid")
 	game := models.NewGame(playerId, dif, bet)
-	return game
+	return models.GetGameDb().Create(game)
 }
 
 func startGame(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +41,7 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 	// }()
 	json.NewDecoder(r.Body).Decode(&data)
 	newGame := createGame(data.PlayerId, data.Dif, data.Bet, w)
+
 	fmt.Println("Game Created")
 	game := models.StartGame(newGame.Id)
 	json.NewEncoder(w).Encode(game)

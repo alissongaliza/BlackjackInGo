@@ -38,9 +38,9 @@ type HardHouse struct {
 
 func (easy *EasyHouse) Hit(gameId int, faceUp bool) {
 	fmt.Println("EasyHouse hit reached")
-	game := findGameOfId(gameId)
+	game := GetGameDb().Get(gameId)
 	//pop an element from the cards array
-	index := utils.GetRandomNumber(0, len(game.Cards))
+	index := utils.GetRandomNumber(0, len(game.Cards)-1)
 	card := game.Cards[index]
 	game.Cards[index] = game.Cards[len(game.Cards)-1]
 	game.Cards = game.Cards[:len(game.Cards)-1]
@@ -52,8 +52,10 @@ func (easy *EasyHouse) Hit(gameId int, faceUp bool) {
 	house := game.House.(*EasyHouse)
 	hand := house.Hand
 	hand.Cards = append(hand.Cards, card)
+	hand.Score += card.value(*hand)
 	// finish turn
 	game.isPlayerTurn = true
+	fmt.Println(house.Hand)
 }
 
 func (easy *EasyHouse) Stand(gameId int) {

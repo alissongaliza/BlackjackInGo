@@ -15,14 +15,14 @@ type GameState string
 const (
 	won     GameState = "won"
 	lost    GameState = "lost"
-	draw    GameState = "draw"
+	drew    GameState = "drew"
 	playing GameState = "playing"
 )
 
 const GameConst Actors = "game"
 
-func NewGame(playerId int, dif Difficuty, bet int) Game {
-	player := FindPlayerOfId(playerId)
+func NewGame(playerId int, dif Difficuty, bet int) (newGame Game) {
+	player := GetPlayerDb().Get(playerId)
 	if player.Chips < bet {
 		panic("Player cant Bet. Chips are lower than current bet.")
 	}
@@ -32,9 +32,8 @@ func NewGame(playerId int, dif Difficuty, bet int) Game {
 	house := getHouse(dif, player.Name)
 	cards := NewDeck()
 
-	newGame := Game{-1, *player, house, cards, bet, false, playing}
-	addNewGame(&newGame)
-	return newGame
+	newGame = Game{-1, player, house, cards, bet, false, playing}
+	return
 }
 
 func NewDeck() (newDeck []Card) {
