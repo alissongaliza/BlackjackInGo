@@ -1,22 +1,29 @@
 package models
 
 type Game struct {
-	Id           int
-	Player       Player
-	House        House
-	Cards        []Card
-	Bet          int
-	isPlayerTurn bool
-	GameState    GameState
+	Id               int
+	Player           Player
+	House            House
+	Cards            []Card
+	Bet              int
+	isPlayerTurn     bool
+	LastPlayerAction Action
+	LastHouseAction  Action
+	GameState        GameState
 }
 
 type GameState string
+type Action string
 
 const (
-	won     GameState = "won"
-	lost    GameState = "lost"
-	drew    GameState = "drew"
-	playing GameState = "playing"
+	won        GameState = "won"
+	lost       GameState = "lost"
+	drew       GameState = "drew"
+	playing    GameState = "playing"
+	noAction   Action    = "noAction"
+	hit        Action    = "hit"
+	stand      Action    = "stand"
+	doubleDown Action    = "doubleDown"
 )
 
 const GameConst Actors = "game"
@@ -32,7 +39,7 @@ func NewGame(playerId int, dif Difficuty, bet int) (newGame Game) {
 	house := getHouse(dif, player.Name)
 	cards := NewDeck()
 
-	newGame = Game{-1, player, house, cards, bet, false, playing}
+	newGame = Game{-1, player, house, cards, bet, false, noAction, noAction, playing}
 	return
 }
 
