@@ -3,12 +3,12 @@ package models
 type Game struct {
 	Id               int
 	Player           Player
-	House            House
+	Dealer            Dealer
 	Cards            []Card
 	Bet              int
 	isPlayerTurn     bool
 	LastPlayerAction Action
-	LastHouseAction  Action
+	LastDealerAction  Action
 	GameState        GameState
 }
 
@@ -36,10 +36,10 @@ func NewGame(playerId int, dif Difficuty, bet int) (newGame Game) {
 	//reset hand
 	newHand := NewHand()
 	player.Hand = &newHand
-	house := getHouse(dif, player.Name)
+	dealer := getDealer(dif, player.Name)
 	cards := NewDeck()
 
-	newGame = Game{-1, player, house, cards, bet, false, noAction, noAction, playing}
+	newGame = Game{-1, player, dealer, cards, bet, false, noAction, noAction, playing}
 	return
 }
 

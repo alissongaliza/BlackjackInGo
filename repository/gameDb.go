@@ -20,11 +20,11 @@ func GetGameDb() GameDb {
 
 		playerDb := GetPlayerDb()
 		player := playerDb.Get(1)
-		houseHand := NewHand()
+		dealerHand := NewHand()
 		opponentName := fmt.Sprintf("%s's opponent", player.Name)
-		house := EasyHouse{opponentName, easy, &houseHand}
+		dealer := EasyDealer{opponentName, easy, &dealerHand}
 		cards := NewDeck()
-		gameInstance[1] = Game{1, player, &house, cards, 0, false, noAction, noAction, playing}
+		gameInstance[1] = Game{1, player, &dealer, cards, 0, false, noAction, noAction, playing}
 
 	})
 
@@ -69,15 +69,15 @@ func (games GameDb) Update(game Game) Game {
 	return game
 }
 
-func getHouse(dif Difficuty, opponentName string) (house House) {
+func getDealer(dif Difficuty, opponentName string) (dealer Dealer) {
 	hand := NewHand()
 	switch dif {
 	case easy:
-		house = &EasyHouse{opponentName, easy, &hand}
+		dealer = &EasyDealer{opponentName, easy, &hand}
 	case medium:
-		house = &MediumHouse{opponentName, medium, &hand}
+		dealer = &MediumDealer{opponentName, medium, &hand}
 	case hard:
-		house = &HardHouse{opponentName, hard, &hand}
+		dealer = &HardDealer{opponentName, hard, &hand}
 	}
 	return
 }

@@ -14,30 +14,30 @@ const (
 	hard   Difficuty = "hard"
 )
 
-type House interface {
+type Dealer interface {
 	User
 	Play(Game) Game
 }
 
-type EasyHouse struct {
+type EasyDealer struct {
 	Name      string
 	Difficuty Difficuty
 	Hand      *Hand
 }
 
-type MediumHouse struct {
+type MediumDealer struct {
 	Name      string
 	Difficuty Difficuty
 	Hand      *Hand
 }
 
-type HardHouse struct {
+type HardDealer struct {
 	Name      string
 	Difficuty Difficuty
 	Hand      *Hand
 }
 
-func (easy *EasyHouse) Play(currentGame Game) Game {
+func (easy *EasyDealer) Play(currentGame Game) Game {
 	if easy.Hand.Score <= 17 {
 		return easy.Hit(currentGame.Id, true)
 	} else {
@@ -45,8 +45,8 @@ func (easy *EasyHouse) Play(currentGame Game) Game {
 	}
 }
 
-func (easy *EasyHouse) Hit(gameId int, faceUp bool) (game Game) {
-	fmt.Println("EasyHouse hit reached")
+func (easy *EasyDealer) Hit(gameId int, faceUp bool) (game Game) {
+	fmt.Println("EasyDealer hit reached")
 	game = GetGameDb().Get(gameId)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
@@ -57,42 +57,42 @@ func (easy *EasyHouse) Hit(gameId int, faceUp bool) (game Game) {
 	if faceUp {
 		card.isFaceUp = true
 	}
-	// assign the new cards to the houses's hand
-	house := game.House.(*EasyHouse)
-	hand := house.Hand
+	// assign the new cards to the dealers's hand
+	dealer := game.Dealer.(*EasyDealer)
+	hand := dealer.Hand
 	hand.Cards = append(hand.Cards, card)
 	hand.Score += card.value(*hand)
 	// finish turn
 	game.isPlayerTurn = true
-	fmt.Println(house.Hand)
+	fmt.Println(dealer.Hand)
 	GetGameDb().Update(game)
 	return
 }
 
-func (easy EasyHouse) Stand(gameId int) (game Game) {
-	fmt.Println("House stands!")
+func (easy EasyDealer) Stand(gameId int) (game Game) {
+	fmt.Println("Dealer stands!")
 	game = GetGameDb().Get(gameId)
-	game.LastHouseAction = stand
+	game.LastDealerAction = stand
 	game.isPlayerTurn = true
 	GetGameDb().Update(game)
 	return
 }
 
-func (medium *MediumHouse) Hit(gameId int, faceUp bool) (game Game) {
-	fmt.Println("MediumHouse hit!")
+func (medium *MediumDealer) Hit(gameId int, faceUp bool) (game Game) {
+	fmt.Println("MediumDealer hit!")
 	return
 }
-func (medium *MediumHouse) Stand(gameId int) (game Game) {
-	fmt.Println("MediumHouse stand!")
-	return
-}
-
-func (hard *HardHouse) Hit(gameId int, faceUp bool) (game Game) {
-	fmt.Println("HardHouse hit!")
+func (medium *MediumDealer) Stand(gameId int) (game Game) {
+	fmt.Println("MediumDealer stand!")
 	return
 }
 
-func (hard *HardHouse) Stand(gameId int) (game Game) {
-	fmt.Println("HardHouse stand!")
+func (hard *HardDealer) Hit(gameId int, faceUp bool) (game Game) {
+	fmt.Println("HardDealer hit!")
+	return
+}
+
+func (hard *HardDealer) Stand(gameId int) (game Game) {
+	fmt.Println("HardDealer stand!")
 	return
 }

@@ -13,9 +13,9 @@ type base interface {
 func StartGame(gameId int) (game Game) {
 	fmt.Println("StartGame reached", gameId)
 	game = GetGameDb().Get(gameId)
-	game.House.Hit(game.Id, true)
+	game.Dealer.Hit(game.Id, true)
 	game.Player.Hit(game.Id, true)
-	game.House.Hit(game.Id, false)
+	game.Dealer.Hit(game.Id, false)
 	game.Player.Hit(game.Id, true)
 	GetGameDb().Update(game)
 	return
