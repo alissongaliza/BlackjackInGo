@@ -16,6 +16,7 @@ const (
 
 type House interface {
 	User
+	Play(Game) Game
 }
 
 type EasyHouse struct {
@@ -34,6 +35,14 @@ type HardHouse struct {
 	Name      string
 	Difficuty Difficuty
 	Hand      *Hand
+}
+
+func (easy *EasyHouse) Play(currentGame Game) Game {
+	if easy.Hand.Score <= 17 {
+		return easy.Hit(currentGame.Id, true)
+	} else {
+		return easy.Stand(currentGame.Id)
+	}
 }
 
 func (easy *EasyHouse) Hit(gameId int, faceUp bool) (game Game) {
