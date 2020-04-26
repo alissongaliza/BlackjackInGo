@@ -9,9 +9,8 @@ import (
 type Difficuty string
 
 const (
-	easy   Difficuty = "easy"
-	medium Difficuty = "medium"
-	hard   Difficuty = "hard"
+	easy Difficuty = "easy"
+	hard Difficuty = "hard"
 )
 
 type Dealer interface {
@@ -20,12 +19,6 @@ type Dealer interface {
 }
 
 type EasyDealer struct {
-	Name      string
-	Difficuty Difficuty
-	Hand      *Hand
-}
-
-type MediumDealer struct {
 	Name      string
 	Difficuty Difficuty
 	Hand      *Hand
@@ -75,15 +68,6 @@ func (easy EasyDealer) Stand(gameId int) (game Game) {
 	game.LastDealerAction = stand
 	game.isUserTurn = true
 	GetGameDb().Update(game)
-	return
-}
-
-func (medium *MediumDealer) Hit(gameId int, faceUp bool) (game Game) {
-	fmt.Println("MediumDealer hit!")
-	return
-}
-func (medium *MediumDealer) Stand(gameId int) (game Game) {
-	fmt.Println("MediumDealer stand!")
 	return
 }
 

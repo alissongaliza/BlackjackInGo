@@ -74,10 +74,8 @@ func getDealer(dif Difficuty, opponentName string) (dealer Dealer) {
 	switch dif {
 	case easy:
 		dealer = &EasyDealer{opponentName, easy, &hand}
-	case medium:
-		dealer = &MediumDealer{opponentName, medium, &hand}
-	case hard:
-		dealer = &HardDealer{opponentName, hard, &hand}
+	case broken:
+		dealer = &BrokenDealer{opponentName, broken, &hand}
 	}
 	return
 }
