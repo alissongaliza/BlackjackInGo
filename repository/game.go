@@ -2,12 +2,12 @@ package models
 
 type Game struct {
 	Id               int
-	Player           Player
+	User           User
 	Dealer            Dealer
 	Cards            []Card
 	Bet              int
-	isPlayerTurn     bool
-	LastPlayerAction Action
+	isUserTurn     bool
+	LastUserAction Action
 	LastDealerAction  Action
 	GameState        GameState
 }
@@ -28,18 +28,18 @@ const (
 
 const GameConst Actors = "game"
 
-func NewGame(playerId int, dif Difficuty, bet int) (newGame Game) {
-	player := GetPlayerDb().Get(playerId)
-	if player.Chips < bet {
-		panic("Player cant Bet. Chips are lower than current bet.")
+func NewGame(userId int, dif Difficuty, bet int) (newGame Game) {
+	user := GetUserDb().Get(userId)
+	if user.Chips < bet {
+		panic("User cant Bet. Chips are lower than current bet.")
 	}
 	//reset hand
 	newHand := NewHand()
-	player.Hand = &newHand
-	dealer := getDealer(dif, player.Name)
+	user.Hand = &newHand
+	dealer := getDealer(dif, user.Name)
 	cards := NewDeck()
 
-	newGame = Game{-1, player, dealer, cards, bet, false, noAction, noAction, playing}
+	newGame = Game{-1, user, dealer, cards, bet, false, noAction, noAction, playing}
 	return
 }
 

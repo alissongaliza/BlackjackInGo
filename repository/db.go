@@ -14,9 +14,9 @@ func StartGame(gameId int) (game Game) {
 	fmt.Println("StartGame reached", gameId)
 	game = GetGameDb().Get(gameId)
 	game.Dealer.Hit(game.Id, true)
-	game.Player.Hit(game.Id, true)
+	game.User.Hit(game.Id, true)
 	game.Dealer.Hit(game.Id, false)
-	game.Player.Hit(game.Id, true)
+	game.User.Hit(game.Id, true)
 	GetGameDb().Update(game)
 	return
 }

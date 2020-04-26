@@ -15,7 +15,7 @@ const (
 )
 
 type Dealer interface {
-	User
+	Player
 	Play(Game) Game
 }
 
@@ -63,7 +63,7 @@ func (easy *EasyDealer) Hit(gameId int, faceUp bool) (game Game) {
 	hand.Cards = append(hand.Cards, card)
 	hand.Score += card.value(*hand)
 	// finish turn
-	game.isPlayerTurn = true
+	game.isUserTurn = true
 	fmt.Println(dealer.Hand)
 	GetGameDb().Update(game)
 	return
@@ -73,7 +73,7 @@ func (easy EasyDealer) Stand(gameId int) (game Game) {
 	fmt.Println("Dealer stands!")
 	game = GetGameDb().Get(gameId)
 	game.LastDealerAction = stand
-	game.isPlayerTurn = true
+	game.isUserTurn = true
 	GetGameDb().Update(game)
 	return
 }

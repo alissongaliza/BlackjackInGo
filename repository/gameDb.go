@@ -18,13 +18,13 @@ func GetGameDb() GameDb {
 
 		gameInstance = make(GameDb)
 
-		playerDb := GetPlayerDb()
-		player := playerDb.Get(1)
+		userDb := GetUserDb()
+		user := userDb.Get(1)
 		dealerHand := NewHand()
-		opponentName := fmt.Sprintf("%s's opponent", player.Name)
+		opponentName := fmt.Sprintf("%s's opponent", user.Name)
 		dealer := EasyDealer{opponentName, easy, &dealerHand}
 		cards := NewDeck()
-		gameInstance[1] = Game{1, player, &dealer, cards, 0, false, noAction, noAction, playing}
+		gameInstance[1] = Game{1, user, &dealer, cards, 0, false, noAction, noAction, playing}
 
 	})
 
