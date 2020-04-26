@@ -20,9 +20,9 @@ func NewPlayer(name string, age int) (newPlayer Player) {
 	return
 }
 
-func (player *Player) Hit(gameId int, faceUp bool) {
-	game := GetGameDb().Get(gameId)
-	fmt.Println("player hit!", gameId, game.GameState)
+func (player Player) Hit(gameId int, faceUp bool) (game Game) {
+	game = GetGameDb().Get(gameId)
+	fmt.Println("player hits!", gameId, game.GameState, game.Player.Hand)
 	if game.GameState != playing {
 		panic(fmt.Sprintf("Game is already over. Player %s", game.GameState))
 	}
@@ -44,13 +44,34 @@ func (player *Player) Hit(gameId int, faceUp bool) {
 	hand.Score += card.value(*hand)
 	// finish turn
 	game.isPlayerTurn = false
-	fmt.Println(player.Hand, game.GameState)
+	fmt.Println(game.Player.Hand, game.GameState)
+	GetGameDb().Update(game)
+	return
 }
 
-func (player Player) Stand(gameId int) {
-	fmt.Println("player stand!")
+func (player Player) Stand(gameId int) (game Game) {
+	fmt.Println("player stands!")
+	game = GetGameDb().Get(gameId)
+	game.LastPlayerAction = stand
+	game.isPlayerTurn = false
+	GetGameDb().Update(game)
+	return
 }
 
-func (player Player) DoubleDown(gameId int) {
-	fmt.Println("player doubleDown!")
+func (player Player) DoubleDown(gameId int) (game Game) {
+	fmt.Println("player doubleDowns!")
+	game = GetGameDb().Get(gameId)
+	if len(game.Player.Hand.Cards) != 2 {
+		panic(`Player can't Double Down. This move is only 
+		available when he has only the first 2 starting cards`)
+	} else if game.Player.Chips < game.Bet {
+		panic(`Player can't Double Down. His current chips balance is lower than necessary`)
+	}
+	game.Player.Chips -= game.Bet
+	game.Bet += game.Bet
+	game.LastPlayerAction = doubleDown
+	game = game.Player.Hit(gameId, true)
+	game.isPlayerTurn = false
+	GetGameDb().Update(game)
+	return
 }

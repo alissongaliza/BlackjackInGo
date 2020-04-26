@@ -36,9 +36,9 @@ type HardHouse struct {
 	Hand      *Hand
 }
 
-func (easy *EasyHouse) Hit(gameId int, faceUp bool) {
+func (easy *EasyHouse) Hit(gameId int, faceUp bool) (game Game) {
 	fmt.Println("EasyHouse hit reached")
-	game := GetGameDb().Get(gameId)
+	game = GetGameDb().Get(gameId)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
 	card := game.Cards[index]
@@ -56,34 +56,57 @@ func (easy *EasyHouse) Hit(gameId int, faceUp bool) {
 	// finish turn
 	game.isPlayerTurn = true
 	fmt.Println(house.Hand)
+	GetGameDb().Update(game)
+	return
 }
 
-func (easy *EasyHouse) Stand(gameId int) {
-	fmt.Println("EasyHouse stand!")
+func (easy EasyHouse) Stand(gameId int) (game Game) {
+	fmt.Println("House stands!")
+	game = GetGameDb().Get(gameId)
+	game.LastHouseAction = stand
+	game.isPlayerTurn = true
+	GetGameDb().Update(game)
+	return
 }
 
-func (easy *EasyHouse) DoubleDown(gameId int) {
-	fmt.Println("EasyHouse doubleDown!")
+func (easy EasyHouse) DoubleDown(gameId int) (game Game) {
+	fmt.Println("easy doubleDowns!")
+	game = GetGameDb().Get(gameId)
+	if len(easy.Hand.Cards) != 2 {
+		panic(`EasyHouse can't Double Down. This move is only 
+		available when he has only the first 2 starting cards`)
+	}
+	game.LastHouseAction = doubleDown
+	game = easy.Hit(gameId, true)
+	game.isPlayerTurn = true
+	GetGameDb().Update(game)
+	return
 }
 
-func (medium *MediumHouse) Hit(gameId int, faceUp bool) {
+func (medium *MediumHouse) Hit(gameId int, faceUp bool) (game Game) {
 	fmt.Println("MediumHouse hit!")
+	return
 }
-func (medium *MediumHouse) Stand(gameId int) {
+func (medium *MediumHouse) Stand(gameId int) (game Game) {
 	fmt.Println("MediumHouse stand!")
+	return
 }
-func (medium *MediumHouse) DoubleDown(gameId int) {
+func (medium *MediumHouse) DoubleDown(gameId int) (game Game) {
 	fmt.Println("MediumHouse doubleDown!")
+	return
 }
 
-func (hard *HardHouse) Hit(gameId int, faceUp bool) {
+func (hard *HardHouse) Hit(gameId int, faceUp bool) (game Game) {
 	fmt.Println("HardHouse hit!")
+	return
 }
 
-func (hard *HardHouse) Stand(gameId int) {
+func (hard *HardHouse) Stand(gameId int) (game Game) {
 	fmt.Println("HardHouse stand!")
+	return
 }
 
-func (hard *HardHouse) DoubleDown(gameId int) {
+func (hard *HardHouse) DoubleDown(gameId int) (game Game) {
 	fmt.Println("HardHouse doubleDown!")
+	return
 }
