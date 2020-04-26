@@ -7,7 +7,7 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
-type GameDb map[int]*Game
+type GameDb map[int]Game
 
 var gameInstance GameDb
 
@@ -24,7 +24,7 @@ func GetGameDb() GameDb {
 		opponentName := fmt.Sprintf("%s's opponent", player.Name)
 		house := EasyHouse{opponentName, easy, &houseHand}
 		cards := NewDeck()
-		gameInstance[1] = &Game{1, player, &house, cards, 0, false, playing}
+		gameInstance[1] = Game{1, player, &house, cards, 0, false, noAction, noAction, playing}
 
 	})
 
@@ -42,9 +42,8 @@ func assignGameId(game *Game) {
 }
 
 func (games GameDb) Create(newGame Game) Game {
-
 	assignGameId(&newGame)
-	games[newGame.Id] = &newGame
+	games[newGame.Id] = newGame
 	return newGame
 }
 
@@ -57,20 +56,16 @@ func IsGameValid(gameId int) bool {
 	return false
 }
 
-func (db GameDb) Get(id int) Game {
-	games := GetGameDb()
-
+func (games GameDb) Get(id int) Game {
 	game, ok := games[id]
 	if !ok {
 		panic(fmt.Sprintf("Game of id %d not found", id))
 	}
-	return *game
+	return game
 }
 
-func (db *GameDb) Update(game Game) Game {
-	games := GetGameDb()
-
-	games[game.Id] = &game
+func (games GameDb) Update(game Game) Game {
+	games[game.Id] = game
 	return game
 }
 
