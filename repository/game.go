@@ -2,13 +2,13 @@ package models
 
 type Game struct {
 	Id               int
-	User           User
-	Dealer            Dealer
+	User             User
+	Dealer           Dealer
 	Cards            []Card
 	Bet              int
-	isUserTurn     bool
-	LastUserAction Action
-	LastDealerAction  Action
+	isUserTurn       bool
+	LastUserAction   Action
+	LastDealerAction Action
 	GameState        GameState
 }
 
