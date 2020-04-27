@@ -13,10 +13,11 @@ type base interface {
 func StartGame(gameId int) (game Game) {
 	fmt.Println("StartGame reached", gameId)
 	game = GetGameDb().Get(gameId)
-	game.Dealer.Hit(game.Id, true)
 	game.User.Hit(game.Id, true)
-	game.Dealer.Hit(game.Id, false)
 	game.User.Hit(game.Id, true)
+	//set the dealer's last given card face down
+	dealer := game.Dealer.(*EasyDealer)
+	dealer.Hand.Cards[1].isFaceUp = false
 	GetGameDb().Update(game)
 	return
 }
