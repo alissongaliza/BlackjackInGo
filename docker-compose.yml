@@ -3,19 +3,30 @@ version: "3.3"
 services:
 
   server:
-    build: .
+    build: ./backend
     container_name: server
     ports:
       - "8080:8080"
     networks: 
       - base
     volumes:
-      - ./:/app
+      - server:/app
+    restart: always
+
+  cli_client:
+    build: ./frontend/cli_client
+    container_name: cli_client
+    networks: 
+      - base
+    volumes:
+      - ./frontend/cli_client:/app
     restart: always
 
 
 
 networks:
   base:
+volumes:
+  server:
 
     
