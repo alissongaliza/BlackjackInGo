@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/alissongaliza/BlackjackInGo/game"
-	"github.com/alissongaliza/BlackjackInGo/user"
+	"github.com/alissongaliza/BlackjackInGo/backend/game"
+	"github.com/alissongaliza/BlackjackInGo/backend/user"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

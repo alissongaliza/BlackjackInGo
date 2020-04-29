@@ -1,4 +1,4 @@
-module github.com/alissongaliza/BlackjackInGo
+module github.com/alissongaliza/BlackjackInGo/backend
 
 go 1.14
 

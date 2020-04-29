@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/alissongaliza/BlackjackInGo/utils"
+	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
 type User struct {
@@ -32,7 +32,7 @@ func (user User) Hit(gameId int, faceUp bool) (game Game) {
 	card := game.Cards[index]
 	game.Cards[index] = game.Cards[len(game.Cards)-1]
 	game.Cards = game.Cards[:len(game.Cards)-1]
-	
+
 	card.isFaceUp = faceUp
 	// assign the new cards to the user's hand
 	hand := game.User.Hand

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	models "github.com/alissongaliza/BlackjackInGo/repository"
+	models "github.com/alissongaliza/BlackjackInGo/backend/repository"
 	"github.com/go-chi/chi"
 )
 
@@ -33,12 +33,12 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 		Dif    models.Difficuty
 		Bet    int
 	}
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		// fmt.Fprint(w, r)
-	// 		fmt.Println(r)
-	// 	}
-	// }()
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
 	json.NewDecoder(r.Body).Decode(&data)
 	newGame := createGame(data.UserId, data.Dif, data.Bet, w)
 

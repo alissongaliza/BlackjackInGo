@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/alissongaliza/BlackjackInGo/utils"
+	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
 type Difficuty string

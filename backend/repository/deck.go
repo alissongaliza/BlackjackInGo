@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/alissongaliza/BlackjackInGo/utils"
+	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
 type SuitType string

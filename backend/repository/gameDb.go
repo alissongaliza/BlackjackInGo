@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/alissongaliza/BlackjackInGo/utils"
+	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
 type GameDb map[int]Game

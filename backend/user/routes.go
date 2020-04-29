@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/alissongaliza/BlackjackInGo/utils"
+	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 
-	models "github.com/alissongaliza/BlackjackInGo/repository"
+	models "github.com/alissongaliza/BlackjackInGo/backend/repository"
 
 	"github.com/go-chi/chi"
 )
@@ -25,6 +25,12 @@ func findUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func addUser(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
 	var data models.User
 	json.NewDecoder(r.Body).Decode(&data)
 
@@ -37,6 +43,12 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func hit(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
 	fmt.Println("hit called")
 	playerId := utils.StringToInt(chi.URLParam(r, "id"))
 	var hitRequest struct {
@@ -50,6 +62,12 @@ func hit(w http.ResponseWriter, r *http.Request) {
 }
 
 func stand(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
 	fmt.Println("stand called")
 	playerId := utils.StringToInt(chi.URLParam(r, "id"))
 	var gameId int
@@ -60,6 +78,12 @@ func stand(w http.ResponseWriter, r *http.Request) {
 }
 
 func doubleDown(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
 	fmt.Println("doubleDown called")
 	playerId := utils.StringToInt(chi.URLParam(r, "id"))
 	var gameId int
