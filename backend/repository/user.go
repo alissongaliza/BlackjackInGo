@@ -6,14 +6,6 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
-type User struct {
-	Name  string
-	Id    int
-	Age   int
-	Hand  *Hand
-	Chips int
-}
-
 func NewUser(name string, age int) (newUser User) {
 	hand := NewHand()
 	newUser = User{name, -1, age, &hand, 100}

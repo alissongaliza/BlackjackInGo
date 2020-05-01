@@ -1,31 +1,5 @@
 package models
 
-type Game struct {
-	Id               int
-	User             User
-	Dealer           Dealer
-	Cards            []Card
-	Bet              int
-	isUserTurn       bool
-	LastUserAction   Action
-	LastDealerAction Action
-	GameState        GameState
-}
-
-type GameState string
-type Action string
-
-const (
-	won        GameState = "won"
-	lost       GameState = "lost"
-	drew       GameState = "drew"
-	playing    GameState = "playing"
-	noAction   Action    = "noAction"
-	hit        Action    = "hit"
-	stand      Action    = "stand"
-	doubleDown Action    = "doubleDown"
-)
-
 const GameConst Actors = "game"
 
 func NewGame(userId int, dif Difficuty, bet int) (newGame Game) {

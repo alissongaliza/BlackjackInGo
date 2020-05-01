@@ -4,27 +4,6 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/backend/utils"
 )
 
-type SuitType string
-
-const (
-	hearts   SuitType = "hearts"
-	spades   SuitType = "spades"
-	clubs    SuitType = "clubs"
-	diamonds SuitType = "diamonds"
-)
-
-type Card struct {
-	Suit     SuitType
-	Name     string
-	isNumber bool
-	isFaceUp bool
-}
-
-type Hand struct {
-	Cards []Card
-	Score int
-}
-
 func NewHand() Hand {
 	return Hand{make([]Card, 0), 0}
 }
