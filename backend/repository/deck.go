@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/alissongaliza/BlackjackInGo/backend/utils"
+	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
 func NewHand() Hand {

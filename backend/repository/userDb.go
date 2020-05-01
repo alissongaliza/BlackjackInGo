@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/alissongaliza/BlackjackInGo/backend/utils"
+	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
 type UserDb map[int]*User

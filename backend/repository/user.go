@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/alissongaliza/BlackjackInGo/backend/utils"
+	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
 func NewUser(name string, age int) (newUser User) {
