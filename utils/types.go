@@ -5,31 +5,40 @@ type Difficuty string
 type GameState string
 type Action string
 
-type User struct {
-	Name  string
-	Id    int
-	Age   int
-	Hand  *Hand
-	Chips int
-}
-
-type Player interface {
+type PlayerActions interface {
 	Hit(gameId int, faceUp bool) (game Game)
 	Stand(gameId int) (game Game)
 }
 
 type RealPlayer interface {
-	Player
 	DoubleDown(gameId int) (game Game)
 }
 
+type Player struct {
+	Hand *Hand
+	PlayerActions
+}
+
+type Dealer struct {
+	Player
+}
+
+type User struct {
+	Player
+	RealPlayer
+	Name  string
+	Id    int
+	Age   int
+	Chips int
+}
+
 type Game struct {
-	Id               int
-	User             User
-	Dealer           Dealer
-	Cards            []Card
-	Bet              int
-	isUserTurn       bool
+	Id     int
+	User   User
+	Dealer Dealer
+	Cards  []Card
+	Bet    int
+	// isUserTurn       bool
 	LastUserAction   Action
 	LastDealerAction Action
 	GameState        GameState
@@ -47,7 +56,7 @@ type Hand struct {
 	Score int
 }
 
-type Dealer interface {
+type DealerActions interface {
 	Play(Game) Game
 }
 
