@@ -1,17 +1,18 @@
-package utils
+package models
 
-type SuitType string
-type Difficuty string
-type GameState string
-type Action string
+import "github.com/alissongaliza/BlackjackInGo/utils"
 
 type PlayerActions interface {
-	Hit(gameId int, faceUp bool) (game Game)
-	Stand(gameId int) (game Game)
+	Hit(int, bool) (game Game)
+	Stand(int) (game Game)
 }
 
 type RealPlayer interface {
-	DoubleDown(gameId int) (game Game)
+	DoubleDown(int) (game Game)
+}
+
+type DealerActions interface {
+	Play(Game) Game
 }
 
 type Player struct {
@@ -21,6 +22,7 @@ type Player struct {
 
 type Dealer struct {
 	Player
+	Difficuty utils.Difficuty
 }
 
 type User struct {
@@ -39,13 +41,13 @@ type Game struct {
 	Cards  []Card
 	Bet    int
 	// isUserTurn       bool
-	LastUserAction   Action
-	LastDealerAction Action
-	GameState        GameState
+	LastUserAction   utils.Action
+	LastDealerAction utils.Action
+	GameState        utils.GameState
 }
 
 type Card struct {
-	Suit     SuitType
+	Suit     utils.SuitType
 	Name     string
 	isNumber bool
 	isFaceUp bool
@@ -55,12 +57,6 @@ type Hand struct {
 	Cards []Card
 	Score int
 }
-
-type DealerActions interface {
-	Play(Game) Game
-}
-
-type Actors string
 
 type base interface {
 	Save(model base) base
