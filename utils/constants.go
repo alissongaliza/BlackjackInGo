@@ -1,24 +1,27 @@
 package utils
 
-const (
-	won        GameState = "won"
-	lost       GameState = "lost"
-	drew       GameState = "drew"
-	playing    GameState = "playing"
-	noAction   Action    = "noAction"
-	hit        Action    = "hit"
-	stand      Action    = "stand"
-	doubleDown Action    = "doubleDown"
-)
+type SuitType string
+type Difficuty string
+type GameState string
+type Action string
+type Actors string
 
 const (
-	hearts   SuitType = "hearts"
-	spades   SuitType = "spades"
-	clubs    SuitType = "clubs"
-	diamonds SuitType = "diamonds"
-)
+	Won     GameState = "won"
+	Lost    GameState = "lost"
+	Drew    GameState = "drew"
+	Playing GameState = "playing"
 
-const (
-	easy   Difficuty = "easy"
-	broken Difficuty = "broken"
+	NoAction   Action = "noAction"
+	Hit        Action = "hit"
+	Stand      Action = "stand"
+	DoubleDown Action = "doubleDown"
+
+	Hearts   SuitType = "hearts"
+	Spades   SuitType = "spades"
+	Clubs    SuitType = "clubs"
+	Diamonds SuitType = "diamonds"
+
+	Easy   Difficuty = "easy"
+	Broken Difficuty = "broken"
 )
