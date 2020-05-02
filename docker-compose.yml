@@ -10,23 +10,10 @@ services:
     networks: 
       - base
     volumes:
-      - server:/app
+      - ./backend:/app
     restart: always
-
-  cli_client:
-    build: ./frontend/cli_client
-    container_name: cli_client
-    networks: 
-      - base
-    volumes:
-      - ./frontend/cli_client:/app
-    restart: always
-
-
 
 networks:
   base:
-volumes:
-  server:
 
     
