@@ -1,7 +1,7 @@
 package utils
 
 type SuitType string
-type Difficuty string
+type Difficulty string
 type GameState string
 type Action string
 type Actors string
@@ -12,7 +12,7 @@ const (
 	Drew    GameState = "drew"
 	Playing GameState = "playing"
 
-	NoAction   Action = "noAction"
+	NoAction   Action = "utils.NoAction"
 	Hit        Action = "hit"
 	Stand      Action = "stand"
 	DoubleDown Action = "doubleDown"
@@ -22,6 +22,6 @@ const (
 	Clubs    SuitType = "clubs"
 	Diamonds SuitType = "diamonds"
 
-	Easy   Difficuty = "easy"
-	Broken Difficuty = "broken"
+	Easy   Difficulty = "easy"
+	Broken Difficulty = "broken"
 )
