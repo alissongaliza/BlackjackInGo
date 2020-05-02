@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/alissongaliza/BlackjackInGo/backend/utils"
+	"github.com/alissongaliza/BlackjackInGo/utils"
 
 	models "github.com/alissongaliza/BlackjackInGo/backend/repository"
 
@@ -17,7 +17,16 @@ type userRequest struct {
 }
 
 func listUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "listing users...")
+	fmt.Println("listing users...")
+	username, ok := r.URL.Query()["username"]
+	var users []models.User
+	if !ok {
+		username[0] = ""
+	}
+	users = models.GetUserDb().List(username[0])
+	fmt.Println(users[0])
+	json.NewEncoder(w).Encode(users)
+
 }
 
 func findUser(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +45,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 
 	newUser := models.NewUser(data.Name, data.Age)
 	newUser = models.GetUserDb().Create(newUser)
+	fmt.Println(newUser)
 	json.NewEncoder(w).Encode(newUser)
 	// fmt.Fprintf(w, "adding user...")
 	// fmt.Fprintf(w, "%+v", newUser)
@@ -54,10 +64,11 @@ func hit(w http.ResponseWriter, r *http.Request) {
 	var hitRequest struct {
 		GameId int
 	}
+	fmt.Println("hit", hitRequest)
 	json.NewDecoder(r.Body).Decode(&hitRequest)
 	player := models.GetUserDb().Get(playerId)
-	player.Hit(hitRequest.GameId, true)
-	// json.NewEncoder(w).Encode(newUser)
+	game := player.Hit(hitRequest.GameId, true)
+	json.NewEncoder(w).Encode(game)
 
 }
 
@@ -73,7 +84,8 @@ func stand(w http.ResponseWriter, r *http.Request) {
 	var gameId int
 	json.NewDecoder(r.Body).Decode(&gameId)
 	user := models.GetUserDb().Get(playerId)
-	user.Stand(gameId)
+	game := user.Stand(gameId)
+	json.NewEncoder(w).Encode(game)
 
 }
 
@@ -89,7 +101,8 @@ func doubleDown(w http.ResponseWriter, r *http.Request) {
 	var gameId int
 	json.NewDecoder(r.Body).Decode(&gameId)
 	player := models.GetUserDb().Get(playerId)
-	player.DoubleDown(gameId)
+	game := player.DoubleDown(gameId)
+	json.NewEncoder(w).Encode(game)
 
 }
 
