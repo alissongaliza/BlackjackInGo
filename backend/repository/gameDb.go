@@ -21,10 +21,10 @@ func GetGameDb() GameDb {
 		userDb := GetUserDb()
 		user := userDb.Get(1)
 		dealerHand := NewHand()
-		opponentName := fmt.Sprintf("%s's opponent", user.Name)
-		dealer := EasyDealer{opponentName, easy, &dealerHand}
+
+		dealer := Dealer{&EasyDealer{}, Player{&dealerHand}, utils.Easy}
 		cards := NewDeck()
-		gameInstance[1] = Game{1, user, &dealer, cards, 0, false, noAction, noAction, playing}
+		gameInstance[1] = Game{1, user, dealer, cards, 0, utils.NoAction, utils.NoAction, utils.Playing}
 
 	})
 
@@ -69,13 +69,23 @@ func (games GameDb) Update(game Game) Game {
 	return game
 }
 
-func getDealer(dif Difficuty, opponentName string) (dealer Dealer) {
+func (db GameDb) List(_ string) []Game {
+	games := GetGameDb()
+	filteredGames := make([]Game, 0)
+	//awkward function
+	for _, game := range games {
+		filteredGames = append(filteredGames, game)
+	}
+	return filteredGames
+}
+func getDealer(dif utils.Difficulty, opponentName string) Dealer {
 	hand := NewHand()
 	switch dif {
-	case easy:
-		dealer = &EasyDealer{opponentName, easy, &hand}
-	case broken:
-		dealer = &BrokenDealer{opponentName, broken, &hand}
+	case utils.Easy:
+		return Dealer{&EasyDealer{}, Player{&hand}, utils.Easy}
+	case utils.Broken:
+		return Dealer{&BrokenDealer{}, Player{&hand}, utils.Easy}
+	default:
+		panic("Invalid dificulty")
 	}
-	return
 }

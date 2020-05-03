@@ -17,17 +17,16 @@ type DealerActions interface {
 
 type Player struct {
 	Hand *Hand
-	PlayerActions
 }
 
 type Dealer struct {
+	DealerActions
 	Player
-	Difficuty utils.Difficuty
+	Difficulty utils.Difficulty
 }
 
 type User struct {
 	Player
-	RealPlayer
 	Name  string
 	Id    int
 	Age   int
@@ -50,7 +49,7 @@ type Card struct {
 	Suit     utils.SuitType
 	Name     string
 	isNumber bool
-	isFaceUp bool
+	IsFaceUp bool
 }
 
 type Hand struct {
@@ -62,4 +61,5 @@ type base interface {
 	Save(model base) base
 	Get(modelId int)
 	Update(model base) base
+	List(name string) []base
 }

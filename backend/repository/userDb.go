@@ -19,7 +19,9 @@ func GetUserDb() UserDb {
 		userInstance = make(UserDb)
 
 		hand1 := NewHand()
-		userInstance[1] = &User{"Alisson", 1, 18, &hand1, 100}
+		hand2 := NewHand()
+		userInstance[1] = &User{Player{&hand1}, "alisson", 1, 18, 100}
+		userInstance[2] = &User{Player{&hand2}, "a", 2, 22, 100}
 
 	})
 
@@ -59,6 +61,25 @@ func (db UserDb) Get(id int) User {
 		panic(fmt.Sprintf("User of id %d not found", id))
 	}
 	return *user
+}
+
+func (db UserDb) List(username string) []User {
+	users := GetUserDb()
+	filteredUsers := make([]User, 0)
+	//this whole function is embarassing
+	if username == "" {
+		for _, user := range users {
+			filteredUsers = append(filteredUsers, *user)
+		}
+	} else {
+		for _, user := range users {
+			if user.Name == username {
+				filteredUsers = append(filteredUsers, *user)
+				break
+			}
+		}
+	}
+	return filteredUsers
 }
 
 func (db *UserDb) Update(user User) User {

@@ -60,4 +60,5 @@ type base interface {
 	Save(model base) base
 	Get(modelId int)
 	Update(model base) base
+	List(name string) []base
 }
