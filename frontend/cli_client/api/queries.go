@@ -85,17 +85,17 @@ func PlayAction(action remoteUtils.Action, game *utils.Game) {
 		GameId int
 	}
 	json.NewEncoder(buf).Encode(playRequest{GameId: game.Id})
-	req, err := http.NewRequest("POST", fmt.Sprintf("http://localhost:8080/users/%d/hit", game.User.Id), buf)
+	req, err := http.NewRequest("POST", fmt.Sprintf("http://localhost:8080/users/%d/%s", game.User.Id, action), buf)
 	if err != nil {
 		log.Print(err)
 	}
 
 	client := &http.Client{}
 	res, e := client.Do(req)
-	defer res.Body.Close()
 	if e != nil {
 		log.Print(e)
 	}
+	defer res.Body.Close()
 
 	json.NewDecoder(res.Body).Decode(&game)
 
