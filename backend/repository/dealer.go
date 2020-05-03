@@ -13,26 +13,38 @@ type BrokenDealer struct {
 }
 
 func (*BrokenDealer) Play(currentGame Game) Game {
-	if currentGame.Dealer.Player.Hand.Score <= 17 &&
-		currentGame.User.Hand.Score > currentGame.User.Hand.Score {
-		return Hit(currentGame.Id, true)
-	} else {
-		return Stand(currentGame.Id)
+	currentGame.Dealer.Hand.Cards[1].IsFaceUp = true
+	currentGame.Dealer.Hand.Score = recalculateHandScore(*currentGame.Dealer.Hand)
+	for currentGame.GameState == utils.Playing {
+		if currentGame.LastDealerAction == utils.Stand {
+			currentGame = currentGame.Dealer.Stand(currentGame.Id)
+		} else if currentGame.Dealer.Player.Hand.Score <= 17 &&
+			currentGame.User.Hand.Score > currentGame.User.Hand.Score {
+			currentGame = currentGame.Dealer.Hit(currentGame.Id, true)
+		} else {
+			currentGame = currentGame.Dealer.Stand(currentGame.Id)
+		}
 	}
+	return currentGame
 }
 
 func (*EasyDealer) Play(currentGame Game) Game {
-	if currentGame.GameState != utils.Playing {
-		return currentGame
+	currentGame.Dealer.Hand.Cards[1].IsFaceUp = true
+	currentGame.Dealer.Hand.Score = recalculateHandScore(*currentGame.Dealer.Hand)
+	for currentGame.GameState == utils.Playing {
+		if currentGame.LastDealerAction == utils.Stand {
+			currentGame = currentGame.Dealer.Stand(currentGame.Id)
+		} else if currentGame.Dealer.Player.Hand.Score <= 17 {
+			currentGame = currentGame.Dealer.Hit(currentGame.Id, true)
+		} else {
+			currentGame = currentGame.Dealer.Stand(currentGame.Id)
+		}
 	}
-	if currentGame.Dealer.Player.Hand.Score <= 17 {
-		return Hit(currentGame.Id, true)
-	} else {
-		return Stand(currentGame.Id)
-	}
+	calculatePayouts(&currentGame)
+	return currentGame
 }
 
-func Hit(gameId int, faceUp bool) (game Game) {
+func (Dealer) Hit(gameId int, faceUp bool) (game Game) {
 	fmt.Println("Dealer hit reached")
 	game = GetGameDb().Get(gameId)
 	//pop an element from the cards array
@@ -46,7 +58,8 @@ func Hit(gameId int, faceUp bool) (game Game) {
 	dealer := game.Dealer
 	hand := dealer.Hand
 	if hand.Score+card.value(*hand) > 21 {
-		game.GameState = utils.Lost
+		//user won
+		game.GameState = utils.Won
 	}
 	hand.Cards = append(hand.Cards, card)
 	if card.IsFaceUp {
@@ -58,12 +71,19 @@ func Hit(gameId int, faceUp bool) (game Game) {
 	return
 }
 
-func Stand(gameId int) (game Game) {
+func (Dealer) Stand(gameId int) (game Game) {
 	fmt.Println("Dealer stands!")
 	game = GetGameDb().Get(gameId)
 	game.LastDealerAction = utils.Stand
-	dealer := game.Dealer
-	fmt.Println("dealer", dealer.Hand, game.GameState)
+	if game.User.Hand.Score > game.Dealer.Hand.Score || game.Dealer.Hand.Score > 21 {
+		//user won
+		game.GameState = utils.Won
+	} else if game.User.Hand.Score == game.Dealer.Hand.Score {
+		game.GameState = utils.Drew
+	} else {
+		// dealer won
+		game.GameState = utils.Lost
+	}
 	GetGameDb().Update(game)
 	return
 }
