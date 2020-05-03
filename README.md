@@ -49,5 +49,6 @@ This project implements a simplistic Blackjack game.
 - [Everything you need to know about packages in Go](https://medium.com/rungo/everything-you-need-to-know-about-packages-in-go-b8bac62b74cc)
 - [Interfaces in Go](https://medium.com/golangspec/interfaces-in-go-part-i-4ae53a97479c)
 - [Pointers in Go](https://www.callicoder.com/golang-pointers/)
+- [How singleton pattern works with Golang](https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f)
 - [Blackjack rules](https://www.pagat.com/banking/blackjack.html)
 - and **lots** of [stackoverflow](https://stackoverflow.com/questions/tagged/go) discussions
