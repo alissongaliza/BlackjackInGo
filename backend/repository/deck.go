@@ -25,3 +25,11 @@ func (card Card) value(hand Hand) int {
 
 	return 10
 }
+
+func recalculateHandScore(hand Hand) int {
+	score := 0
+	for _, card := range hand.Cards {
+		score += card.value(hand)
+	}
+	return score
+}
