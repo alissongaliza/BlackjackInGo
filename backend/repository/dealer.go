@@ -7,16 +7,25 @@ import (
 )
 
 type EasyDealer struct {
-	Name      string
-	Difficuty Difficuty
-	Hand      *Hand
 }
 
-func (easy *EasyDealer) Play(currentGame Game) Game {
-	if currentGame.GameState != playing {
+type BrokenDealer struct {
+}
+
+func (*BrokenDealer) Play(currentGame Game) Game {
+	if currentGame.Dealer.Player.Hand.Score <= 17 &&
+		currentGame.User.Hand.Score > currentGame.User.Hand.Score {
+		return Hit(currentGame.Id, true)
+	} else {
+		return Stand(currentGame.Id)
+	}
+}
+
+func (*EasyDealer) Play(currentGame Game) Game {
+	if currentGame.GameState != utils.Playing {
 		return currentGame
 	}
-	if easy.Hand.Score <= 17 {
+	if currentGame.Dealer.Player.Hand.Score <= 17 {
 		return Hit(currentGame.Id, true)
 	} else {
 		return Stand(currentGame.Id)
@@ -32,18 +41,18 @@ func Hit(gameId int, faceUp bool) (game Game) {
 	game.Cards[index] = game.Cards[len(game.Cards)-1]
 	game.Cards = game.Cards[:len(game.Cards)-1]
 
-	card.isFaceUp = faceUp
+	card.IsFaceUp = faceUp
 	// assign the new cards to the dealers's hand
-	dealer := game.Dealer.(*EasyDealer)
+	dealer := game.Dealer
 	hand := dealer.Hand
 	if hand.Score+card.value(*hand) > 21 {
-		game.GameState = lost
+		game.GameState = utils.Lost
 	}
 	hand.Cards = append(hand.Cards, card)
-	hand.Score += card.value(*hand)
-	// finish turn
-	game.isUserTurn = true
-	game.LastDealerAction = hit
+	if card.IsFaceUp {
+		hand.Score += card.value(*hand)
+	}
+	game.LastDealerAction = utils.Hit
 	fmt.Println("dealer", dealer.Hand, game.GameState)
 	GetGameDb().Update(game)
 	return
@@ -52,10 +61,8 @@ func Hit(gameId int, faceUp bool) (game Game) {
 func Stand(gameId int) (game Game) {
 	fmt.Println("Dealer stands!")
 	game = GetGameDb().Get(gameId)
-	game.LastDealerAction = stand
-	game.isUserTurn = true
-	game.LastDealerAction = stand
-	dealer := game.Dealer.(*EasyDealer)
+	game.LastDealerAction = utils.Stand
+	dealer := game.Dealer
 	fmt.Println("dealer", dealer.Hand, game.GameState)
 	GetGameDb().Update(game)
 	return

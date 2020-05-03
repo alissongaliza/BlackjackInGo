@@ -8,7 +8,7 @@ import (
 
 func NewUser(name string, age int) (newUser User) {
 	hand := NewHand()
-	newUser = User{name, -1, age, &hand, 100}
+	newUser = User{Player{&hand}, name, -1, age, 100}
 	return
 }
 
@@ -16,7 +16,7 @@ func (user User) Hit(gameId int, faceUp bool) (game Game) {
 	fmt.Printf("user %d hits!", user.Id)
 	game = GetGameDb().Get(gameId)
 	fmt.Println(game.GameState)
-	if game.GameState != playing {
+	if game.GameState != utils.Playing {
 		panic(fmt.Sprintf("Game is already over. User %s", game.GameState))
 	}
 	//pop an element from the cards array
@@ -25,28 +25,27 @@ func (user User) Hit(gameId int, faceUp bool) (game Game) {
 	game.Cards[index] = game.Cards[len(game.Cards)-1]
 	game.Cards = game.Cards[:len(game.Cards)-1]
 
-	card.isFaceUp = faceUp
+	card.IsFaceUp = faceUp
 	// assign the new cards to the user's hand
 	hand := game.User.Hand
 	if hand.Score+card.value(*hand) > 21 {
-		game.GameState = lost
+		game.GameState = utils.Lost
 	}
 	hand.Cards = append(hand.Cards, card)
-	hand.Score += card.value(*hand)
-	// finish turn
-	game.isUserTurn = false
+	if card.IsFaceUp {
+		hand.Score += card.value(*hand)
+	}
 	fmt.Println("user", game.User.Hand, game.GameState)
 	//call dealers turn
 	GetGameDb().Update(game)
-	game = game.Dealer.Play(game)
+	game = game.Dealer.DealerActions.Play(game)
 	return
 }
 
 func (user User) Stand(gameId int) (game Game) {
 	fmt.Printf("user %d stands!", user.Id)
 	game = GetGameDb().Get(gameId)
-	game.LastUserAction = stand
-	game.isUserTurn = false
+	game.LastUserAction = utils.Stand
 	//call dealers turn
 	GetGameDb().Update(game)
 	game = game.Dealer.Play(game)
@@ -64,9 +63,8 @@ func (user User) DoubleDown(gameId int) (game Game) {
 	}
 	game.User.Chips -= game.Bet
 	game.Bet += game.Bet
-	game.LastUserAction = doubleDown
+	game.LastUserAction = utils.DoubleDown
 	game = game.User.Hit(gameId, true)
-	game.isUserTurn = false
 	//call dealers turn
 	GetGameDb().Update(game)
 	game = game.Dealer.Play(game)

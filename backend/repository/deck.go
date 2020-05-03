@@ -1,15 +1,13 @@
 package models
 
-import (
-	"github.com/alissongaliza/BlackjackInGo/utils"
-)
+import "github.com/alissongaliza/BlackjackInGo/utils"
 
 func NewHand() Hand {
 	return Hand{make([]Card, 0), 0}
 }
 
 func (card Card) value(hand Hand) int {
-	if !card.isFaceUp {
+	if !card.IsFaceUp {
 		return 0
 	}
 
@@ -17,7 +15,7 @@ func (card Card) value(hand Hand) int {
 		return utils.StringToInt(card.Name)
 	}
 
-	if card.Name == "ace" {
+	if card.Name == "ACE" {
 		if hand.Score+11 <= 21 {
 			return 11
 		}

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	models "github.com/alissongaliza/BlackjackInGo/backend/repository"
+	"github.com/alissongaliza/BlackjackInGo/utils"
 	"github.com/go-chi/chi"
 )
 
@@ -17,7 +18,7 @@ func findGame(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "finding games...")
 }
 
-func createGame(userId int, dif models.Difficuty, bet int, w http.ResponseWriter) models.Game {
+func createGame(userId int, dif utils.Difficulty, bet int, w http.ResponseWriter) models.Game {
 	fmt.Println("creating game...", userId, dif, bet)
 	if !models.IsUserValid(userId) {
 		panic(fmt.Sprintf("User of id %d not in the database.", userId))
@@ -30,7 +31,7 @@ func createGame(userId int, dif models.Difficuty, bet int, w http.ResponseWriter
 func startGame(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		UserId int
-		Dif    models.Difficuty
+		Dif    utils.Difficulty
 		Bet    int
 	}
 	defer func() {
