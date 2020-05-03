@@ -8,7 +8,6 @@
 -   Learn the thought process of the language
 -   Understand the idiomatic ways of the language
 -   Integrate the project with third-party libraries
--   Build a piece of a backend system with a REST API
 
 ### BlackjackInGo
 
