@@ -15,7 +15,7 @@ func NewGame(userId int, dif utils.Difficulty, bet int) (newGame Game) {
 	dealer := getDealer(dif, user.Name)
 	cards := NewDeck()
 
-	newGame = Game{-1, user, dealer, cards, bet, utils.NoAction, utils.NoAction, utils.Playing}
+	newGame = Game{-1, user, dealer, cards, bet, 0, utils.NoAction, utils.NoAction, utils.Playing}
 	return
 }
 

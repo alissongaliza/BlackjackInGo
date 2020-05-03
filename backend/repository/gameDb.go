@@ -24,7 +24,7 @@ func GetGameDb() GameDb {
 
 		dealer := Dealer{&EasyDealer{}, Player{&dealerHand}, utils.Easy}
 		cards := NewDeck()
-		gameInstance[1] = Game{1, user, dealer, cards, 0, utils.NoAction, utils.NoAction, utils.Playing}
+		gameInstance[1] = Game{1, user, dealer, cards, 0, 0, utils.NoAction, utils.NoAction, utils.Playing}
 
 	})
 

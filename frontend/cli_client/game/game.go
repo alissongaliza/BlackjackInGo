@@ -34,7 +34,9 @@ func EnterGameLoop(game utils.Game) {
 			}
 		}
 	}
-	fmt.Printf("Game is over, you %s", game.GameState)
+	printTable(game)
+	fmt.Printf("Game is over, you %s\n", game.GameState)
+	printPayout(game)
 }
 
 func printAvailableOptions(game utils.Game) {
@@ -77,4 +79,14 @@ func printHand(hand utils.Hand) {
 	userCards = userCards[:len(userCards)-1]
 	userCards += fmt.Sprintf(". Score: %d.", hand.Score)
 	fmt.Println(userCards)
+}
+
+func printPayout(game utils.Game) {
+	if game.GameState == remoteUtils.Lost {
+		fmt.Printf("You lost the chips you bet (%d)", game.Bet)
+	} else if game.GameState == remoteUtils.Won {
+		fmt.Printf("You won %d chips", game.Payout)
+	} else {
+		fmt.Printf("You drew and got %d chips", game.Payout)
+	}
 }

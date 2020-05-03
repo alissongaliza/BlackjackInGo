@@ -39,6 +39,7 @@ type Game struct {
 	Dealer Dealer
 	Cards  []Card
 	Bet    int
+	Payout int
 	// isUserTurn       bool
 	LastUserAction   utils.Action
 	LastDealerAction utils.Action

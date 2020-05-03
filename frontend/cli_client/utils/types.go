@@ -39,6 +39,7 @@ type Game struct {
 	Dealer           Dealer
 	Cards            []Card
 	Bet              int
+	Payout           int
 	LastUserAction   utils.Action
 	LastDealerAction utils.Action
 	GameState        utils.GameState
