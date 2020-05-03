@@ -7,7 +7,7 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
-type UserDb map[int]*User
+type UserDb map[int]User
 
 var userInstance UserDb
 
@@ -20,8 +20,8 @@ func GetUserDb() UserDb {
 
 		hand1 := NewHand()
 		hand2 := NewHand()
-		userInstance[1] = &User{Player{&hand1}, "alisson", 1, 18, 100}
-		userInstance[2] = &User{Player{&hand2}, "a", 2, 22, 100}
+		userInstance[1] = User{Player{&hand1}, "alisson", 1, 18, 100}
+		userInstance[2] = User{Player{&hand2}, "a", 2, 22, 100}
 
 	})
 
@@ -40,7 +40,7 @@ func assignUserId(user *User) {
 
 func (users UserDb) Create(newUser User) User {
 	assignUserId(&newUser)
-	users[newUser.Id] = &newUser
+	users[newUser.Id] = newUser
 	return newUser
 }
 
@@ -60,7 +60,7 @@ func (db UserDb) Get(id int) User {
 	if !ok {
 		panic(fmt.Sprintf("User of id %d not found", id))
 	}
-	return *user
+	return user
 }
 
 func (db UserDb) List(username string) []User {
@@ -69,12 +69,12 @@ func (db UserDb) List(username string) []User {
 	//this whole function is embarassing
 	if username == "" {
 		for _, user := range users {
-			filteredUsers = append(filteredUsers, *user)
+			filteredUsers = append(filteredUsers, user)
 		}
 	} else {
 		for _, user := range users {
 			if user.Name == username {
-				filteredUsers = append(filteredUsers, *user)
+				filteredUsers = append(filteredUsers, user)
 				break
 			}
 		}
@@ -85,6 +85,6 @@ func (db UserDb) List(username string) []User {
 func (db *UserDb) Update(user User) User {
 	users := GetUserDb()
 
-	users[user.Id] = &user
+	users[user.Id] = user
 	return user
 }
