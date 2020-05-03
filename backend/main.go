@@ -29,6 +29,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 	r.Get("/", pingLink)
 	r.Mount("/users", user.UserRouter())
 	r.Mount("/games", game.GameRouter())
