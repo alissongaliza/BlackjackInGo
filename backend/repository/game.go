@@ -1,6 +1,10 @@
 package models
 
-import "github.com/alissongaliza/BlackjackInGo/utils"
+import (
+	"fmt"
+
+	"github.com/alissongaliza/BlackjackInGo/utils"
+)
 
 const GameConst utils.Actors = "game"
 
@@ -38,4 +42,44 @@ func NewDeck() (newDeck []Card) {
 		)
 	}
 	return
+}
+
+func StartGame(gameId int) (game Game) {
+	fmt.Println("StartGame reached", gameId)
+	game = GetGameDb().Get(gameId)
+	game.User.Hit(game.Id, true)
+	game.User.Hit(game.Id, true)
+	game.Dealer.Hit(game.Id, true)
+	game.Dealer.Hit(game.Id, false)
+	//set the dealer's last given card face down and recalculate score
+	dealerHand := game.Dealer.Hand
+	dealerHand.Cards[1].IsFaceUp = false
+	dealerHand.Score = recalculateHandScore(*dealerHand)
+	GetGameDb().Update(game)
+	return
+}
+
+func calculatePayouts(game *Game) {
+	user := game.User
+	winnings := 0
+	switch game.GameState {
+	case utils.Won:
+		{
+			if game.LastUserAction == utils.DoubleDown {
+				winnings = game.Bet * 4
+			} else {
+				winnings = game.Bet * 2
+			}
+		}
+	case utils.Drew:
+		{
+			if user.Hand.Score == 21 {
+				winnings = int(float64(game.Bet) * 1.5)
+			} else {
+				winnings = game.Bet
+			}
+		}
+	}
+	user.Chips += winnings
+	game.Payout = winnings
 }
