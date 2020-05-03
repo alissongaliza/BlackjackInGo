@@ -61,13 +61,12 @@ func hit(w http.ResponseWriter, r *http.Request) {
 	}()
 	fmt.Println("hit called")
 	playerId := utils.StringToInt(chi.URLParam(r, "id"))
-	var hitRequest struct {
+	var request struct {
 		GameId int
 	}
-	fmt.Println("hit", hitRequest)
-	json.NewDecoder(r.Body).Decode(&hitRequest)
-	player := models.GetUserDb().Get(playerId)
-	game := player.Hit(hitRequest.GameId, true)
+	json.NewDecoder(r.Body).Decode(&request)
+	playerDb := models.GetUserDb().Get(playerId)
+	game := playerDb.Hit(request.GameId, true)
 	json.NewEncoder(w).Encode(game)
 
 }
@@ -79,12 +78,13 @@ func stand(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(r)
 		}
 	}()
-	fmt.Println("stand called")
 	playerId := utils.StringToInt(chi.URLParam(r, "id"))
-	var gameId int
-	json.NewDecoder(r.Body).Decode(&gameId)
-	user := models.GetUserDb().Get(playerId)
-	game := user.Stand(gameId)
+	var request struct {
+		GameId int
+	}
+	json.NewDecoder(r.Body).Decode(&request)
+	playerDb := models.GetUserDb().Get(playerId)
+	game := playerDb.Stand(request.GameId)
 	json.NewEncoder(w).Encode(game)
 
 }
