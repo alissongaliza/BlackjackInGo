@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/alissongaliza/BlackjackInGo/utils"
@@ -79,7 +80,7 @@ func (db GameDb) List(userId string) []Game {
 		}
 	} else {
 		for _, game := range games {
-			if string(game.User.Id) == userId &&
+			if strconv.Itoa(game.User.Id) == userId &&
 				game.GameState == utils.Playing {
 				filteredGames = append(filteredGames, game)
 			}
