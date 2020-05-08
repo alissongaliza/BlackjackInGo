@@ -19,7 +19,7 @@ func GetGameDb() GameDb {
 		gameInstance = make(GameDb)
 
 		userDb := GetUserDb()
-		user := userDb.Get(1)
+		user := userDb.Get(2)
 		dealerHand := NewHand()
 
 		dealer := Dealer{&EasyDealer{}, Player{&dealerHand}, utils.Easy}
@@ -69,15 +69,25 @@ func (games GameDb) Update(game Game) Game {
 	return game
 }
 
-func (db GameDb) List(_ string) []Game {
+func (db GameDb) List(userId string) []Game {
 	games := GetGameDb()
 	filteredGames := make([]Game, 0)
-	//awkward function
-	for _, game := range games {
-		filteredGames = append(filteredGames, game)
+	//this whole function is embarassing
+	if userId == "" {
+		for _, game := range games {
+			filteredGames = append(filteredGames, game)
+		}
+	} else {
+		for _, game := range games {
+			if string(game.User.Id) == userId &&
+				game.GameState == utils.Playing {
+				filteredGames = append(filteredGames, game)
+			}
+		}
 	}
 	return filteredGames
 }
+
 func getDealer(dif utils.Difficulty, opponentName string) Dealer {
 	hand := NewHand()
 	switch dif {
