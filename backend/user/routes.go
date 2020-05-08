@@ -12,10 +12,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type userRequest struct {
-	*models.User
-}
-
 func listUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("listing users...")
 	username, ok := r.URL.Query()["username"]
@@ -24,7 +20,6 @@ func listUsers(w http.ResponseWriter, r *http.Request) {
 		username[0] = ""
 	}
 	users = models.GetUserDb().List(username[0])
-	fmt.Println(users[0])
 	json.NewEncoder(w).Encode(users)
 
 }
@@ -40,12 +35,12 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(r)
 		}
 	}()
-	var data models.User
+	var data models.NewUserRequest
 	json.NewDecoder(r.Body).Decode(&data)
 
 	newUser := models.NewUser(data.Name, data.Age)
 	newUser = models.GetUserDb().Create(newUser)
-	fmt.Println(newUser)
+	fmt.Println("newUsew", newUser)
 	json.NewEncoder(w).Encode(newUser)
 	// fmt.Fprintf(w, "adding user...")
 	// fmt.Fprintf(w, "%+v", newUser)

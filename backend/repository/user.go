@@ -8,7 +8,8 @@ import (
 
 func NewUser(name string, age int) (newUser User) {
 	hand := NewHand()
-	newUser = User{Player{&hand}, name, -1, age, 100}
+	//dummy id
+	newUser = User{Player: Player{&hand}, Name: name, Id: -1, Age: age, Chips: 100}
 	return
 }
 
