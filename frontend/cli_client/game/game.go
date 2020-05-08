@@ -11,7 +11,7 @@ import (
 func EnterGameLoop(game utils.Game) {
 	for game.GameState == remoteUtils.Playing {
 		var answer int
-		printTable(game)
+		PrintTable(game)
 		printAvailableOptions(game)
 		fmt.Scan(&answer)
 		switch answer {
@@ -34,9 +34,10 @@ func EnterGameLoop(game utils.Game) {
 			}
 		}
 	}
-	printTable(game)
+	PrintTable(game)
 	fmt.Printf("Game is over, you %s\n", game.GameState)
 	printPayout(game)
+	fmt.Println("Current balance is ", game.User.Chips)
 }
 
 func printAvailableOptions(game utils.Game) {
@@ -55,16 +56,16 @@ func printAvailableOptions(game utils.Game) {
 
 }
 
-func printTable(game utils.Game) {
+func PrintTable(game utils.Game) {
 	fmt.Print("Your hand: ")
 	userHand := game.User.Hand
-	printHand(*userHand)
+	PrintHand(*userHand)
 	fmt.Print("Dealer hand: ")
 	dealerHand := game.Dealer.Hand
-	printHand(*dealerHand)
+	PrintHand(*dealerHand)
 }
 
-func printHand(hand utils.Hand) {
+func PrintHand(hand utils.Hand) {
 	userCards := ""
 	for _, card := range hand.Cards {
 		if card.IsFaceUp {
