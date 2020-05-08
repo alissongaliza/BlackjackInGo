@@ -11,6 +11,7 @@ const (
 	Lost    GameState = "lost"
 	Drew    GameState = "drew"
 	Playing GameState = "playing"
+	Setup   GameState = "setup"
 
 	NoAction   Action = "utils.NoAction"
 	Hit        Action = "hit"
