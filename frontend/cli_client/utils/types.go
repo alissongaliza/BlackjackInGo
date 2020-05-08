@@ -63,3 +63,8 @@ type base interface {
 	Update(model base) base
 	List(name string) []base
 }
+
+type NewUserRequest struct {
+	Age  int
+	Name string
+}
