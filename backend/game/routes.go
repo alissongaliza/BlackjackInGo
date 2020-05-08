@@ -12,6 +12,13 @@ import (
 
 func listGames(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "listing games...")
+	userId, ok := r.URL.Query()["userId"]
+	if !ok {
+		userId[0] = ""
+	}
+	games := models.GetGameDb().List(userId[0])
+	// fmt.Println(games)
+	json.NewEncoder(w).Encode(games)
 }
 
 func findGame(w http.ResponseWriter, r *http.Request) {
