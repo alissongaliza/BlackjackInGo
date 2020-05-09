@@ -16,7 +16,6 @@ func listGames(w http.ResponseWriter, r *http.Request) {
 		userId[0] = ""
 	}
 	games := models.GetGameDb().List(userId[0])
-	fmt.Println("games found", len(games))
 	json.NewEncoder(w).Encode(games)
 }
 
@@ -54,11 +53,25 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(game)
 }
 
+func initGame(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			// fmt.Fprint(w, r)
+			fmt.Println(r)
+		}
+	}()
+	gameId := utils.StringToInt(chi.URLParam(r, "id"))
+	game := models.StartGame(gameId)
+
+	json.NewEncoder(w).Encode(game)
+}
+
 func GameRouter() chi.Router {
 	r := chi.NewRouter()
 	r.Get("/", listGames)
 	r.Get("/{id}", findGame)
 	r.Post("/", startGame)
+	r.Put("/{id}", initGame)
 
 	return r
 }

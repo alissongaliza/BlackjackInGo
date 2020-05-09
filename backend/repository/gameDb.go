@@ -25,7 +25,7 @@ func GetGameDb() GameDb {
 
 		dealer := Dealer{&EasyDealer{}, Player{&dealerHand}, utils.Easy}
 		cards := NewDeck()
-		gameInstance[1] = Game{1, user, dealer, cards, 0, 0, utils.NoAction, utils.NoAction, utils.Playing}
+		gameInstance[1] = Game{1, user, dealer, cards, 0, 0, utils.NoAction, utils.NoAction, utils.Setup}
 
 	})
 
@@ -81,7 +81,8 @@ func (db GameDb) List(userId string) []Game {
 	} else {
 		for _, game := range games {
 			if strconv.Itoa(game.User.Id) == userId &&
-				game.GameState == utils.Playing {
+				game.GameState == utils.Playing ||
+				game.GameState == utils.Setup {
 				filteredGames = append(filteredGames, game)
 			}
 		}

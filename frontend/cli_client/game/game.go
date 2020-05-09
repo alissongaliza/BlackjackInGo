@@ -9,6 +9,9 @@ import (
 )
 
 func EnterGameLoop(game utils.Game) {
+	if game.GameState == remoteUtils.Setup {
+		game = api.InitGame(game.Id)
+	}
 	for game.GameState == remoteUtils.Playing {
 		var answer int
 		PrintTable(game)
@@ -37,7 +40,7 @@ func EnterGameLoop(game utils.Game) {
 	PrintTable(game)
 	fmt.Printf("Game is over, you %s\n", game.GameState)
 	printPayout(game)
-	fmt.Println("Current balance is ", game.User.Chips)
+	fmt.Println("\nCurrent balance is ", game.User.Chips)
 }
 
 func printAvailableOptions(game utils.Game) {
@@ -66,6 +69,10 @@ func PrintTable(game utils.Game) {
 }
 
 func PrintHand(hand utils.Hand) {
+	if len(hand.Cards) == 0 {
+		fmt.Println("Empty")
+		return
+	}
 	userCards := ""
 	for _, card := range hand.Cards {
 		if card.IsFaceUp {
@@ -73,7 +80,6 @@ func PrintHand(hand utils.Hand) {
 		} else {
 			// card faced down
 			userCards += " ?,"
-
 		}
 	}
 	// switch comma for period

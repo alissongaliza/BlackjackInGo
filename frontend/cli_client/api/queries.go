@@ -63,9 +63,7 @@ func FindUser(username string) utils.User {
 	}
 }
 
-func FindOngoingGamesOfUser(userId int) (games []utils.Game) {
-	fmt.Println("id", userId, string(userId))
-
+func FindOngoingGamesOfUser(userId int) []utils.Game {
 	buf := new(bytes.Buffer)
 	json.NewEncoder(buf).Encode(&userId)
 	req, err := http.NewRequest("GET", "http://localhost:8080/games", buf)
@@ -83,13 +81,32 @@ func FindOngoingGamesOfUser(userId int) (games []utils.Game) {
 	}
 
 	defer res.Body.Close()
+	var games []utils.Game
 	json.NewDecoder(res.Body).Decode(&games)
-	fmt.Println("games", games)
 
 	return games
 }
 
-func StartGame(userId int, dif remoteUtils.Difficulty, bet int) (game utils.Game) {
+func InitGame(gameId int) utils.Game {
+
+	buf := new(bytes.Buffer)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("http://localhost:8080/games/%d", gameId), buf)
+	if err != nil {
+		log.Print(err)
+	}
+
+	client := &http.Client{}
+	res, e := client.Do(req)
+	if e != nil {
+		log.Print(e)
+	}
+	defer res.Body.Close()
+	var game utils.Game
+	json.NewDecoder(res.Body).Decode(&game)
+	return game
+}
+
+func CreateGame(userId int, dif remoteUtils.Difficulty, bet int) (game utils.Game) {
 
 	type startType struct {
 		UserId int

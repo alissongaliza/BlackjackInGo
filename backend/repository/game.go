@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
@@ -19,7 +17,7 @@ func NewGame(userId int, dif utils.Difficulty, bet int) (newGame Game) {
 	dealer := getDealer(dif, user.Name)
 	cards := NewDeck()
 
-	newGame = Game{-1, user, dealer, cards, bet, 0, utils.NoAction, utils.NoAction, utils.Playing}
+	newGame = Game{-1, user, dealer, cards, bet, 0, utils.NoAction, utils.NoAction, utils.Setup}
 	return
 }
 
@@ -45,8 +43,9 @@ func NewDeck() (newDeck []Card) {
 }
 
 func StartGame(gameId int) (game Game) {
-	fmt.Println("StartGame reached", gameId)
 	game = GetGameDb().Get(gameId)
+	game.GameState = utils.Playing
+	GetGameDb().Update(game)
 	game.User.Hit(game.Id, true)
 	game.User.Hit(game.Id, true)
 	game.Dealer.Hit(game.Id, true)
