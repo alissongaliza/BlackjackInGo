@@ -45,7 +45,7 @@ func main() {
 		//create game
 		diff := chooseDifficulty()
 		betAnswer := placeBets(user)
-		game = api.StartGame(user.Id, diff, betAnswer)
+		game = api.CreateGame(user.Id, diff, betAnswer)
 	} else {
 		// find ongoing games
 		games := api.FindOngoingGamesOfUser(user.Id)

@@ -15,11 +15,10 @@ import (
 func listUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("listing users...")
 	username, ok := r.URL.Query()["username"]
-	var users []models.User
 	if !ok {
 		username[0] = ""
 	}
-	users = models.GetUserDb().List(username[0])
+	users := models.GetUserDb().List(username[0])
 	json.NewEncoder(w).Encode(users)
 
 }
