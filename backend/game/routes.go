@@ -1,77 +1,77 @@
 package game
 
-import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	"net/http"
 
-	models "github.com/alissongaliza/BlackjackInGo/backend/repository"
-	"github.com/alissongaliza/BlackjackInGo/utils"
-	"github.com/go-chi/chi"
-)
+// 	models "github.com/alissongaliza/BlackjackInGo/backend/models"
+// 	"github.com/alissongaliza/BlackjackInGo/utils"
+// 	"github.com/go-chi/chi"
+// )
 
-func listGames(w http.ResponseWriter, r *http.Request) {
-	userId, ok := r.URL.Query()["userId"]
-	if !ok {
-		userId[0] = ""
-	}
-	games := models.GetGameDb().List(userId[0])
-	json.NewEncoder(w).Encode(games)
-}
+// func listGames(w http.ResponseWriter, r *http.Request) {
+// 	userId, ok := r.URL.Query()["userId"]
+// 	if !ok {
+// 		userId[0] = ""
+// 	}
+// 	games := models.GetGameDb().List(userId[0])
+// 	json.NewEncoder(w).Encode(games)
+// }
 
-func findGame(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "finding games...")
-}
+// func findGame(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Fprintf(w, "finding games...")
+// }
 
-func createGame(userId int, dif utils.Difficulty, bet int, w http.ResponseWriter) models.Game {
-	fmt.Println("creating game...", userId, dif, bet)
-	if !models.IsUserValid(userId) {
-		panic(fmt.Sprintf("User of id %d not in the database.", userId))
-	}
-	fmt.Println("User is valid")
-	game := models.NewGame(userId, dif, bet)
-	return models.GetGameDb().Create(game)
-}
+// func createGame(userId int, dif utils.Difficulty, bet int, w http.ResponseWriter) models.Game {
+// 	fmt.Println("creating game...", userId, dif, bet)
+// 	if !models.IsUserValid(userId) {
+// 		panic(fmt.Sprintf("User of id %d not in the database.", userId))
+// 	}
+// 	fmt.Println("User is valid")
+// 	game := models.NewGame(userId, dif, bet)
+// 	return models.GetGameDb().Create(game)
+// }
 
-func startGame(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		UserId int
-		Dif    utils.Difficulty
-		Bet    int
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			// fmt.Fprint(w, r)
-			fmt.Println(r)
-		}
-	}()
-	json.NewDecoder(r.Body).Decode(&data)
-	newGame := createGame(data.UserId, data.Dif, data.Bet, w)
+// func startGame(w http.ResponseWriter, r *http.Request) {
+// 	var data struct {
+// 		UserId int
+// 		Dif    utils.Difficulty
+// 		Bet    int
+// 	}
+// 	defer func() {
+// 		if r := recover(); r != nil {
+// 			// fmt.Fprint(w, r)
+// 			fmt.Println(r)
+// 		}
+// 	}()
+// 	json.NewDecoder(r.Body).Decode(&data)
+// 	newGame := createGame(data.UserId, data.Dif, data.Bet, w)
 
-	fmt.Println("Game Created")
-	game := models.StartGame(newGame.Id)
-	json.NewEncoder(w).Encode(game)
-}
+// 	fmt.Println("Game Created")
+// 	game := models.StartGame(newGame.Id)
+// 	json.NewEncoder(w).Encode(game)
+// }
 
-func initGame(w http.ResponseWriter, r *http.Request) {
-	defer func() {
-		if r := recover(); r != nil {
-			// fmt.Fprint(w, r)
-			fmt.Println(r)
-		}
-	}()
-	gameId := utils.StringToInt(chi.URLParam(r, "id"))
-	game := models.StartGame(gameId)
+// func initGame(w http.ResponseWriter, r *http.Request) {
+// 	defer func() {
+// 		if r := recover(); r != nil {
+// 			// fmt.Fprint(w, r)
+// 			fmt.Println(r)
+// 		}
+// 	}()
+// 	gameId := utils.StringToInt(chi.URLParam(r, "id"))
+// 	game := models.StartGame(gameId)
 
-	json.NewEncoder(w).Encode(game)
-}
+// 	json.NewEncoder(w).Encode(game)
+// }
 
-func GameRouter() chi.Router {
-	r := chi.NewRouter()
-	r.Get("/", listGames)
-	r.Get("/{id}", findGame)
-	r.Post("/", startGame)
-	r.Put("/{id}", initGame)
+// func GameRouter() chi.Router {
+// 	r := chi.NewRouter()
+// 	r.Get("/", listGames)
+// 	r.Get("/{id}", findGame)
+// 	r.Post("/", startGame)
+// 	r.Put("/{id}", initGame)
 
-	return r
-}
+// 	return r
+// }

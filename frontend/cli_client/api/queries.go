@@ -134,11 +134,8 @@ func CreateGame(userId int, dif remoteUtils.Difficulty, bet int) (game utils.Gam
 func PlayAction(action remoteUtils.Action, game *utils.Game) {
 
 	buf := new(bytes.Buffer)
-	type playRequest struct {
-		GameId int
-	}
-	json.NewEncoder(buf).Encode(playRequest{GameId: game.Id})
-	req, err := http.NewRequest("POST", fmt.Sprintf("http://localhost:8080/users/%d/%s", game.User.Id, action), buf)
+	json.NewEncoder(buf).Encode(remoteUtils.UserActionRequest{Action: action})
+	req, err := http.NewRequest("POST", fmt.Sprintf("http://localhost:8080/games/%d/play", game.Id), buf)
 	if err != nil {
 		log.Print(err)
 	}

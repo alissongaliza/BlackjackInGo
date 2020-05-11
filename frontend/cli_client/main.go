@@ -49,8 +49,12 @@ func main() {
 	} else {
 		// find ongoing games
 		games := api.FindOngoingGamesOfUser(user.Id)
-		fmt.Println("Choose which game you want to continue on:")
-		game = printOngoingGames(games)
+		if len(games) == 0 {
+			fmt.Println("No games to continue. Try starting a new Game")
+		} else {
+			fmt.Println("Choose which game you want to continue on:")
+			game = printOngoingGames(games)
+		}
 	}
 	fmt.Println("\nStarting game...")
 	gamePkg.EnterGameLoop(game)
