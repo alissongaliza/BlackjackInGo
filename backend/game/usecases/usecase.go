@@ -59,13 +59,16 @@ func (guc gameUsecase) CreateHand() models.Hand {
 
 func (guc gameUsecase) StartNewGame(game models.Game) models.Game {
 	game.GameState = utils.Playing
+	game.User.Chips -= game.Bet
+	// due to not handling user db and game db the right way
 	game = guc.gameRepo.UpdateGame(game)
+	game.User = guc.userUsecase.UpdateUser(game.User)
 	game = guc.userUsecase.Hit(game.Id, true)
 	game = guc.userUsecase.Hit(game.Id, true)
 	game = guc.dealerUsecase.Hit(game.Id, true)
 	game = guc.dealerUsecase.Hit(game.Id, false)
 	//set the dealer's last given card face down and recalculate score
-	dealerHand := game.Dealer.Hand
+	dealerHand := &game.Dealer.Hand
 	dealerHand.Cards[1].IsFaceUp = false
 	dealerHand.Score = dealerHand.RecalculateScore()
 	return guc.gameRepo.UpdateGame(game)
