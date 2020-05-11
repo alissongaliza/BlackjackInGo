@@ -45,7 +45,7 @@ func (uuc userUsecase) UpdateUser(user models.User) models.User {
 
 func (uuc userUsecase) IsUserValid(userId int) bool {
 	user := uuc.userRepo.GetUser(userId)
-	return user.Age > 18
+	return user.Age >= 18
 }
 
 func (uuc userUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
