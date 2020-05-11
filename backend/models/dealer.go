@@ -13,6 +13,3 @@ type Dealer struct {
 	Player
 	Difficulty utils.Difficulty
 }
-
-type EasyDealer Dealer
-type BrokenDealer Dealer

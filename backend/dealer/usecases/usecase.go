@@ -9,6 +9,9 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
+type EasyDealer models.Dealer
+type BrokenDealer models.Dealer
+
 type dealerUsecase struct {
 	gameRepo game.Repository
 }
@@ -23,11 +26,11 @@ func (duc dealerUsecase) CreateDealer(dif utils.Difficulty) models.Dealer {
 	hand := duc.gameRepo.CreateHand()
 	switch dif {
 	case utils.Easy:
-		return models.Dealer{DealerActions: &models.EasyDealer{},
+		return models.Dealer{DealerActions: &EasyDealer{},
 			Player: models.Player{Hand: hand}, Difficulty: utils.Easy,
 		}
 	case utils.Broken:
-		return models.Dealer{DealerActions: &models.BrokenDealer{},
+		return models.Dealer{DealerActions: &BrokenDealer{},
 			Player: models.Player{Hand: hand}, Difficulty: utils.Broken,
 		}
 	default:
@@ -36,12 +39,35 @@ func (duc dealerUsecase) CreateDealer(dif utils.Difficulty) models.Dealer {
 }
 
 func (duc dealerUsecase) AutoPlay(currentGame models.Game) models.Game {
-	return currentGame.Dealer.Play(currentGame)
+	currentGame.Dealer.Hand.Cards[1].IsFaceUp = true
+	currentGame.Dealer.Hand.RecalculateScore()
+	for currentGame.GameState == utils.Playing {
+		if currentGame.LastDealerAction == utils.Stand {
+			currentGame = duc.Stand(currentGame.Id)
+		} else {
+			if currentGame.Dealer.Difficulty == utils.Broken {
+				if currentGame.Dealer.Player.Hand.Score <= 17 &&
+					currentGame.User.Hand.Score > currentGame.User.Hand.Score {
+					currentGame = duc.Hit(currentGame.Id, true)
+				} else {
+					currentGame = duc.Stand(currentGame.Id)
+				}
+			} else {
+				if currentGame.Dealer.Player.Hand.Score <= 17 {
+					currentGame = duc.Hit(currentGame.Id, true)
+				} else {
+					currentGame = duc.Stand(currentGame.Id)
+				}
+			}
+		}
+	}
+	currentGame.CalculatePayouts()
+	return currentGame
 }
 
-func (duc dealerUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
+func (duc dealerUsecase) Hit(gameId int, faceUp bool) models.Game {
 	fmt.Println("Dealer hit reached")
-	game = duc.gameRepo.GetGame(gameId)
+	game := duc.gameRepo.GetGame(gameId)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
 	card := game.Cards[index]
@@ -50,8 +76,7 @@ func (duc dealerUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
 
 	card.IsFaceUp = faceUp
 	// assign the new cards to the dealers's hand
-	dealer := game.Dealer
-	hand := dealer.Hand
+	hand := &game.Dealer.Hand
 	hand.Cards = append(hand.Cards, card)
 	if card.IsFaceUp {
 		hand.Score = hand.RecalculateScore()
@@ -60,9 +85,9 @@ func (duc dealerUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
 		//user won
 		game.GameState = utils.Won
 	}
+	fmt.Println("Dealer hand", hand)
 	game.LastDealerAction = utils.Hit
-	duc.gameRepo.UpdateGame(game)
-	return
+	return duc.gameRepo.UpdateGame(game)
 }
 
 func (duc dealerUsecase) Stand(gameId int) (game models.Game) {
@@ -80,37 +105,3 @@ func (duc dealerUsecase) Stand(gameId int) (game models.Game) {
 	}
 	return duc.gameRepo.UpdateGame(game)
 }
-
-// func (*BrokenDealer) Play(currentGame Game) Game {
-// 	duc := dealerUsecase.New
-// 	currentGame.Dealer.Hand.Cards[1].IsFaceUp = true
-// 	currentGame.Dealer.Hand.Score()
-// 	for currentGame.GameState == utils.Playing {
-// 		if currentGame.LastDealerAction == utils.Stand {
-// 			currentGame = dus.Stand(currentGame.Id)
-// 		} else if currentGame.Dealer.Player.Hand.Score <= 17 &&
-// 			currentGame.User.Hand.Score > currentGame.User.Hand.Score {
-// 			currentGame = dus.Hit(currentGame.Id, true)
-// 		} else {
-// 			currentGame = dus.Stand(currentGame.Id)
-// 		}
-// 	}
-// 	return currentGame
-// }
-
-// func (*EasyDealer) Play(currentGame Game) Game {
-// 	duc := dealerUsecase.New
-// 	currentGame.Dealer.Hand.Cards[1].IsFaceUp = true
-// 	currentGame.Dealer.Hand.Score()
-// 	for currentGame.GameState == utils.Playing {
-// 		if currentGame.LastDealerAction == utils.Stand {
-// 			currentGame = dus.Stand(currentGame.Id)
-// 		} else if currentGame.Dealer.Player.Hand.Score <= 17 {
-// 			currentGame = dus.Hit(currentGame.Id, true)
-// 		} else {
-// 			currentGame = dus.Stand(currentGame.Id)
-// 		}
-// 	}
-// 	calculatePayouts(&currentGame)
-// 	return currentGame
-// }
