@@ -12,7 +12,6 @@
 ### BlackjackInGo
 
 This project implements a simplistic Blackjack game.
-Currently under major architecture refactor in branch [cleanCodeRefactor](https://github.com/alissongaliza/BlackjackInGo/tree/cleanCodeRefactor)
 
 #### How does it work
 
@@ -49,6 +48,8 @@ Currently under major architecture refactor in branch [cleanCodeRefactor](https:
 - [Everything you need to know about packages in Go](https://medium.com/rungo/everything-you-need-to-know-about-packages-in-go-b8bac62b74cc)
 - [Interfaces in Go](https://medium.com/golangspec/interfaces-in-go-part-i-4ae53a97479c)
 - [Pointers in Go](https://www.callicoder.com/golang-pointers/)
+- [Clean Architecture repo example](https://github.com/bxcodec/go-clean-arch/tree/v2)
+- [Golang Clean Architecture](https://hackernoon.com/golang-clean-archithecture-efd6d7c43047)
 - [How singleton pattern works with Golang](https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f)
 - [Blackjack rules](https://www.pagat.com/banking/blackjack.html)
 - and **lots** of [stackoverflow](https://stackoverflow.com/questions/tagged/go) discussions
