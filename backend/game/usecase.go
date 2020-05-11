@@ -14,5 +14,4 @@ type UseCase interface {
 	IsGameValid(gameId int) bool
 	StartNewGame(game models.Game) models.Game
 	ContinueGame(game models.Game) models.Game
-	CalculatePayouts(game *models.Game)
 }
