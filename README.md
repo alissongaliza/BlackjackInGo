@@ -12,6 +12,7 @@
 ### BlackjackInGo
 
 This project implements a simplistic Blackjack game.
+Currently under major architecture refactor in branch `cleanCodeRefactor`
 
 #### How does it work
 
