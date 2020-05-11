@@ -26,7 +26,7 @@ func NewUserUsecase(gameRepo game.Repository, userRepo user.Repository, dealerUs
 
 func (uuc userUsecase) CreateUser(name string, age int) models.User {
 	id := uuc.userRepo.GetNextValidUserId()
-	player := models.Player{uuc.gameRepo.CreateHand()}
+	player := models.Player{Hand: uuc.gameRepo.CreateHand()}
 	user := models.User{Age: age, Name: name, Id: id, Chips: 100, Player: player}
 	return uuc.userRepo.CreateUser(user)
 }
