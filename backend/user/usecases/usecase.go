@@ -81,7 +81,7 @@ func (uuc userUsecase) Stand(gameId int) (game models.Game) {
 	game.LastUserAction = utils.Stand
 	uuc.gameRepo.UpdateGame(game)
 	//call dealers turn
-	game = game.Dealer.Play(game)
+	game = uuc.dealerUsecase.AutoPlay(game)
 	return
 }
 
@@ -99,6 +99,6 @@ func (uuc userUsecase) DoubleDown(gameId int) (game models.Game) {
 	game.LastUserAction = utils.DoubleDown
 	game = uuc.Hit(gameId, true)
 	//call dealers turn
-	// game = uuc.dealerUsecase.
+	game = uuc.dealerUsecase.AutoPlay(game)
 	return
 }
