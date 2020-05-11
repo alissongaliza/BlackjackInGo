@@ -54,18 +54,17 @@ func (uuc userUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
 	if game.GameState != utils.Playing {
 		panic(fmt.Sprintf("Game is already over. User %s", game.GameState))
 	}
-	//pop an element from the cards array
+	//pop an element from the cards slice
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
 	card := game.Cards[index]
 	game.Cards[index] = game.Cards[len(game.Cards)-1]
 	game.Cards = game.Cards[:len(game.Cards)-1]
-
 	card.IsFaceUp = faceUp
 	// assign the new cards to the user's hand
-	hand := game.User.Hand
+	hand := &game.User.Hand
 	hand.Cards = append(hand.Cards, card)
 	if card.IsFaceUp {
-		hand.Score = hand.RecalculateScore()
+		hand.Score += card.Value(*hand)
 	}
 	// check if burst happened
 	if hand.Score > 21 {
