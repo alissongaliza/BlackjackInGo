@@ -9,33 +9,32 @@ import (
 )
 
 func EnterGameLoop(game utils.Game) {
-	if game.GameState == remoteUtils.Setup {
-		game = api.InitGame(game.Id)
-	}
 	for game.GameState == remoteUtils.Playing {
 		var answer int
 		PrintTable(game)
 		printAvailableOptions(game)
 		fmt.Scan(&answer)
+		var action remoteUtils.Action
 		switch answer {
 		//for simplicity options numbers are static
 		case 1:
 			{
-				api.PlayAction(remoteUtils.Hit, &game)
+				action = remoteUtils.Hit
 			}
 		case 2:
 			{
-				api.PlayAction(remoteUtils.Stand, &game)
+				action = remoteUtils.Stand
 			}
 		case 3:
 			{
-				api.PlayAction(remoteUtils.DoubleDown, &game)
+				action = remoteUtils.DoubleDown
 			}
 		default:
 			{
 				fmt.Println("Invalid option.")
 			}
 		}
+		api.PlayAction(action, &game)
 	}
 	PrintTable(game)
 	fmt.Printf("Game is over, you %s\n", game.GameState)
