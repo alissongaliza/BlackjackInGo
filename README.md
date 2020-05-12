@@ -51,5 +51,6 @@ This project implements a simplistic Blackjack game.
 - [Clean Architecture repo example](https://github.com/bxcodec/go-clean-arch/tree/v2)
 - [Golang Clean Architecture](https://hackernoon.com/golang-clean-archithecture-efd6d7c43047)
 - [How singleton pattern works with Golang](https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f)
+- [Unit testing made easy in go](https://medium.com/rungo/unit-testing-made-easy-in-go-25077669318)
 - [Blackjack rules](https://www.pagat.com/banking/blackjack.html)
 - and **lots** of [stackoverflow](https://stackoverflow.com/questions/tagged/go) discussions
