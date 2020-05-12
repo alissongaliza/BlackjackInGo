@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/alissongaliza/BlackjackInGo/backend/game"
@@ -56,18 +55,16 @@ func (gh *GameHandler) startGame(w http.ResponseWriter, r *http.Request) {
 	if user, err := gh.userRepo.GetUser(request.UserId); err != nil {
 		json.NewEncoder(w).Encode(err)
 	} else {
-		isValid, err2 := gh.userUsecase.IsUserValid(user)
-		if err2 != nil {
-			json.NewEncoder(w).Encode(err2)
-		} else if !isValid {
-			panic(fmt.Sprintf("User of id %d not in the database.", request.UserId))
+		isValid := gh.userUsecase.IsUserValid(user)
+		if !isValid {
+			json.NewEncoder(w).Encode("User not Valid")
 		}
-		if game, err3 := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet); err3 != nil {
-			json.NewEncoder(w).Encode(err3)
+		if game, err2 := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet); err2 != nil {
+			json.NewEncoder(w).Encode(err2)
 		} else {
-			var err4 error
-			if game, err4 = gh.gameUsecase.StartNewGame(game); err4 != nil {
-				json.NewEncoder(w).Encode(err4)
+			var err3 error
+			if game, err3 = gh.gameUsecase.StartNewGame(game); err3 != nil {
+				json.NewEncoder(w).Encode(err3)
 			} else {
 				json.NewEncoder(w).Encode(game)
 			}

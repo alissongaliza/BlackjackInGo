@@ -31,12 +31,12 @@ func (uuc userUsecase) CreateUser(name string, age int) models.User {
 	return uuc.userRepo.CreateUser(user)
 }
 
-func (uuc userUsecase) IsUserValid(user models.User) (bool, error) {
+func (uuc userUsecase) IsUserValid(user models.User) bool {
 	var err error
 	if user, err = uuc.userRepo.GetUser(user.Id); err != nil {
-		return false, err
+		return false
 	}
-	return user.Age >= 18, nil
+	return user.Age >= 18
 }
 
 func (uuc userUsecase) Hit(game models.Game, faceUp bool) (models.Game, error) {
@@ -75,8 +75,7 @@ func (uuc userUsecase) Stand(game models.Game) models.Game {
 func (uuc userUsecase) DoubleDown(game models.Game) (models.Game, error) {
 	// fmt.Println("user doubleDowns!")
 	if len(game.User.Hand.Cards) != 2 {
-		return models.Game{}, fmt.Errorf(`User can't Double Down. This move is only 
-		available when he only has the first 2 starting cards`)
+		return models.Game{}, fmt.Errorf(`User can't Double Down. This move is only available when he only has the first 2 starting cards`)
 	} else if game.User.Chips < game.Bet {
 		return models.Game{}, fmt.Errorf(`User can't Double Down. His current chips balance is lower than necessary`)
 	}

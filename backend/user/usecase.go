@@ -6,6 +6,6 @@ type UseCase interface {
 	Hit(game models.Game, faceUp bool) (models.Game, error)
 	Stand(game models.Game) models.Game
 	DoubleDown(game models.Game) (models.Game, error)
-	IsUserValid(user models.User) (bool, error)
+	IsUserValid(user models.User) bool
 	CreateUser(name string, age int) models.User
 }
