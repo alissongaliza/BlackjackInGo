@@ -24,19 +24,19 @@ func NewDealerUsecase(gameRepo game.Repository, userRepo user.Repository) dealer
 	}
 }
 
-func (duc dealerUsecase) CreateDealer(dif utils.Difficulty) models.Dealer {
+func (duc dealerUsecase) CreateDealer(dif utils.Difficulty) (models.Dealer, error) {
 	hand := duc.gameRepo.CreateHand()
 	switch dif {
 	case utils.Easy:
 		return models.Dealer{DealerActions: &EasyDealer{},
 			Player: models.Player{Hand: hand}, Difficulty: utils.Easy,
-		}
+		}, nil
 	case utils.Broken:
 		return models.Dealer{DealerActions: &BrokenDealer{},
 			Player: models.Player{Hand: hand}, Difficulty: utils.Broken,
-		}
+		}, nil
 	default:
-		panic("Invalid dificulty")
+		return models.Dealer{}, fmt.Errorf("Invalid dificulty")
 	}
 }
 

@@ -12,11 +12,11 @@ func GetRandomNumber(start int, end int) (number int) {
 	return
 }
 
-func StringToInt(str string) int {
+func StringToInt(str string) (int, error) {
 
 	if s, err := strconv.Atoi(str); err == nil {
-		return s
+		return s, nil
 	} else {
-		panic(err)
+		return -1, err
 	}
 }

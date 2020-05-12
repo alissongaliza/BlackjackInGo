@@ -1,14 +1,15 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 )
 
-func GetMapIntKeys(m interface{}) []int {
+func GetMapIntKeys(m interface{}) ([]int, error) {
 
 	v := reflect.ValueOf(m)
 	if v.Kind() != reflect.Map {
-		panic("Not a map!")
+		return nil, fmt.Errorf("Not a map!")
 	}
 
 	valueKeys := v.MapKeys()
@@ -16,5 +17,5 @@ func GetMapIntKeys(m interface{}) []int {
 	for i := range valueKeys {
 		keys[i] = valueKeys[i].Interface().(int)
 	}
-	return keys
+	return keys, nil
 }

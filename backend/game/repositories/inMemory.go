@@ -56,12 +56,12 @@ func (imgr *inMemoryGameRepository) IsGameValid(gameId int) bool {
 	return len(games) > 0
 }
 
-func (imgr *inMemoryGameRepository) GetGame(id int) models.Game {
+func (imgr *inMemoryGameRepository) GetGame(id int) (models.Game, error) {
 	game, ok := imgr.Db[id]
 	if !ok {
-		panic(fmt.Sprintf("Game of id %d not found", id))
+		return models.Game{}, fmt.Errorf("Game of id %d not found", id)
 	}
-	return game
+	return game, nil
 }
 
 func (imgr *inMemoryGameRepository) UpdateGame(game models.Game) models.Game {

@@ -6,7 +6,7 @@ import (
 )
 
 type UseCase interface {
-	CreateDealer(dif utils.Difficulty) models.Dealer
+	CreateDealer(dif utils.Difficulty) (models.Dealer, error)
 	AutoPlay(models.Game) models.Game
 	Hit(game models.Game, faceUp bool) models.Game
 	Stand(game models.Game) models.Game
