@@ -6,6 +6,7 @@ import (
 	"github.com/alissongaliza/BlackjackInGo/backend/dealer"
 	"github.com/alissongaliza/BlackjackInGo/backend/game"
 	"github.com/alissongaliza/BlackjackInGo/backend/models"
+	"github.com/alissongaliza/BlackjackInGo/backend/user"
 	"github.com/alissongaliza/BlackjackInGo/utils"
 )
 
@@ -14,11 +15,12 @@ type BrokenDealer models.Dealer
 
 type dealerUsecase struct {
 	gameRepo game.Repository
+	userRepo user.Repository
 }
 
-func NewDealerUsecase(gameRepo game.Repository) dealer.UseCase {
+func NewDealerUsecase(gameRepo game.Repository, userRepo user.Repository) dealer.UseCase {
 	return &dealerUsecase{
-		gameRepo: gameRepo,
+		gameRepo: gameRepo, userRepo: userRepo,
 	}
 }
 
@@ -62,6 +64,7 @@ func (duc dealerUsecase) AutoPlay(currentGame models.Game) models.Game {
 		}
 	}
 	currentGame.CalculatePayouts()
+	duc.userRepo.UpdateUser(currentGame.User)
 	return currentGame
 }
 

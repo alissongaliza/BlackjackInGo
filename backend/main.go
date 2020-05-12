@@ -29,7 +29,7 @@ func main() {
 	r.Get("/", pingLink)
 	userRepo := userRepositories.NewInMemoryUserDb()
 	gameRepo := gameRepositories.NewInMemoryGameDb()
-	dealerUsescase := dealerUsecases.NewDealerUsecase(gameRepo)
+	dealerUsescase := dealerUsecases.NewDealerUsecase(gameRepo, userRepo)
 	userUsecases := userUsecases.NewUserUsecase(gameRepo, userRepo, dealerUsescase)
 	gameUsecases := gameUsecases.NewGameUsecase(gameRepo, dealerUsescase, userUsecases)
 	userDeliveryHttp.NewUserHandler(r, userUsecases, gameUsecases)
