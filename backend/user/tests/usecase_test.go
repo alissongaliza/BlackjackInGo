@@ -93,18 +93,55 @@ func TestDoubleDown(t *testing.T) {
 	// simulating adding a third card to test doubledown 2 card max rule
 	card := models.Card{Suit: utils.Diamonds, Name: "3", IsNumber: true, IsFaceUp: true}
 	game2.User.Hand.Cards = append(game2.User.Hand.Cards, card)
-	userUcase.DoubleDown(game2)
-	if r := recover(); r != nil {
+	_, err := userUcase.DoubleDown(game2)
+	if err != nil &&
+		err.Error() == `User can't Double Down. This move is only available when he only has the first 2 starting cards` {
 		t.Log("User DoubleDown 2 cards max test passed")
 	} else {
 		t.Error("User DoubleDown 2 cards max test  failed")
 	}
 
 	game3 := mockGame("alisson", 18, utils.Easy, 60, false)
-	userUcase.DoubleDown(game3)
-	if r := recover(); r != nil {
-		t.Log("User DoubleDown not enough chips to double down test passed")
+	_, err2 := userUcase.DoubleDown(game3)
+	if err2 != nil &&
+		err2.Error() == `User can't Double Down. His current chips balance is lower than necessary` {
+		t.Log("User DoubleDown not enough chips passed")
 	} else {
-		t.Error("User DoubleDown not enough chips to double down test  failed")
+		t.Error("User DoubleDown not enough chips  failed")
+	}
+}
+
+func TestIsUserValid(t *testing.T) {
+	user1 := userUcase.CreateUser("alisson", 18)
+	if isValid := userUcase.IsUserValid(user1); !isValid {
+		t.Error("User valid test failed")
+	} else {
+		t.Log("User valid test passed")
+	}
+	user2 := userUcase.CreateUser("alisson", 17)
+	if isValid := userUcase.IsUserValid(user2); isValid {
+		t.Error("User invalid test failed")
+	} else {
+		t.Log("User invalid test passed")
+	}
+}
+
+func TestCreateUser(t *testing.T) {
+	var (
+		name    = "alisson"
+		age     = 18
+		hand    = gameRepo.CreateHand()
+		initial = 100
+	)
+	user1 := userUcase.CreateUser(name, age)
+	if user1.Age == age &&
+		user1.Name == name &&
+		len(user1.Hand.Cards) == len(hand.Cards) &&
+		user1.Hand.Score == 0 &&
+		user1.Id > 0 &&
+		user1.Chips == initial {
+		t.Log("User create test passed")
+	} else {
+		t.Error("User create test failed")
 	}
 }
