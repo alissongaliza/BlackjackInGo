@@ -31,9 +31,9 @@ func main() {
 	gameRepo := gameRepositories.NewInMemoryGameDb()
 	dealerUsescase := dealerUsecases.NewDealerUsecase(gameRepo, userRepo)
 	userUsecases := userUsecases.NewUserUsecase(gameRepo, userRepo, dealerUsescase)
-	gameUsecases := gameUsecases.NewGameUsecase(gameRepo, dealerUsescase, userUsecases)
-	userDeliveryHttp.NewUserHandler(r, userUsecases, gameUsecases)
-	gameDeliveryHttp.NewGameHandler(r, gameUsecases, userUsecases)
+	gameUsecases := gameUsecases.NewGameUsecase(gameRepo, dealerUsescase, userUsecases, userRepo)
+	userDeliveryHttp.NewUserHandler(r, userUsecases, gameRepo, userRepo)
+	gameDeliveryHttp.NewGameHandler(r, gameUsecases, userUsecases, userRepo, gameRepo)
 
 	fmt.Println("Listening")
 	log.Fatal(http.ListenAndServe(":8080", r))

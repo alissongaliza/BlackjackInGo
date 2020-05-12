@@ -7,11 +7,6 @@ import (
 
 type UseCase interface {
 	CreateGame(user models.User, dif utils.Difficulty, bet int) models.Game
-	GetGame(gameId int) models.Game
-	ListGame(userId int) []models.Game
-	UpdateGame(game models.Game) models.Game
-	CreateHand() models.Hand
-	IsGameValid(gameId int) bool
 	StartNewGame(game models.Game) models.Game
 	ContinueGame(game models.Game) models.Game
 }

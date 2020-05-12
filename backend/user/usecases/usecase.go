@@ -31,18 +31,6 @@ func (uuc userUsecase) CreateUser(name string, age int) models.User {
 	return uuc.userRepo.CreateUser(user)
 }
 
-func (uuc userUsecase) GetUser(userId int) models.User {
-	return uuc.userRepo.GetUser(userId)
-}
-
-func (uuc userUsecase) ListUser(name string) []models.User {
-	return uuc.userRepo.ListUser(name)
-}
-
-func (uuc userUsecase) UpdateUser(user models.User) models.User {
-	return uuc.userRepo.UpdateUser(user)
-}
-
 func (uuc userUsecase) IsUserValid(userId int) bool {
 	user := uuc.userRepo.GetUser(userId)
 	return user.Age >= 18
@@ -71,13 +59,13 @@ func (uuc userUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
 		game.GameState = utils.Lost
 	}
 	game = uuc.gameRepo.UpdateGame(game)
-	fmt.Println("user hand", game.User.Hand, game.GameState)
+	// fmt.Println("user hand", game.User.Hand, game.GameState)
 	return
 }
 
 func (uuc userUsecase) Stand(gameId int) (game models.Game) {
 	game = uuc.gameRepo.GetGame(gameId)
-	fmt.Printf("user %d stands!", game.User.Id)
+	// fmt.Printf("user %d stands!", game.User.Id)
 	game.LastUserAction = utils.Stand
 	uuc.gameRepo.UpdateGame(game)
 	//call dealers turn
@@ -86,7 +74,7 @@ func (uuc userUsecase) Stand(gameId int) (game models.Game) {
 }
 
 func (uuc userUsecase) DoubleDown(gameId int) (game models.Game) {
-	fmt.Println("user doubleDowns!")
+	// fmt.Println("user doubleDowns!")
 	game = uuc.gameRepo.GetGame(gameId)
 	if len(game.User.Hand.Cards) != 2 {
 		panic(`User can't Double Down. This move is only 
@@ -96,8 +84,8 @@ func (uuc userUsecase) DoubleDown(gameId int) (game models.Game) {
 	}
 	game.User.Chips -= game.Bet
 	game.Bet += game.Bet
-	game.LastUserAction = utils.DoubleDown
 	game = uuc.Hit(gameId, true)
+	game.LastUserAction = utils.DoubleDown
 	//call dealers turn
 	game = uuc.dealerUsecase.AutoPlay(game)
 	return

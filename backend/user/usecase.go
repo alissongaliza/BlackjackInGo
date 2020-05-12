@@ -8,7 +8,4 @@ type UseCase interface {
 	DoubleDown(gameId int) (game models.Game)
 	IsUserValid(userId int) bool
 	CreateUser(name string, age int) models.User
-	GetUser(userId int) models.User
-	ListUser(name string) []models.User
-	UpdateUser(user models.User) models.User
 }

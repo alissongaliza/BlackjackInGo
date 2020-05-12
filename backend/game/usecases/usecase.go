@@ -14,13 +14,16 @@ type gameUsecase struct {
 	gameRepo      game.Repository
 	dealerUsecase dealer.UseCase
 	userUsecase   user.UseCase
+	userRepo      user.Repository
 }
 
-func NewGameUsecase(gameRepo game.Repository, dealerUsecase dealer.UseCase, userUsecase user.UseCase) game.UseCase {
+func NewGameUsecase(gameRepo game.Repository, dealerUsecase dealer.UseCase,
+	userUsecase user.UseCase, userRepo user.Repository) game.UseCase {
 	return &gameUsecase{
 		gameRepo:      gameRepo,
 		dealerUsecase: dealerUsecase,
 		userUsecase:   userUsecase,
+		userRepo:      userRepo,
 	}
 }
 
@@ -62,7 +65,7 @@ func (guc gameUsecase) StartNewGame(game models.Game) models.Game {
 	game.User.Chips -= game.Bet
 	// due to not handling user db and game db the right way
 	game = guc.gameRepo.UpdateGame(game)
-	game.User = guc.userUsecase.UpdateUser(game.User)
+	game.User = guc.userRepo.UpdateUser(game.User)
 	game = guc.userUsecase.Hit(game.Id, true)
 	game = guc.userUsecase.Hit(game.Id, true)
 	game = guc.dealerUsecase.Hit(game.Id, true)

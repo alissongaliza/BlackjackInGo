@@ -14,11 +14,14 @@ import (
 
 type UserHandler struct {
 	userUsecase user.UseCase
-	gameUsecase game.UseCase
+	gameRepo    game.Repository
+	userRepo    user.Repository
 }
 
-func NewUserHandler(r chi.Router, userUsecase user.UseCase, gameUsecase game.UseCase) {
-	handler := &UserHandler{userUsecase: userUsecase, gameUsecase: gameUsecase}
+func NewUserHandler(r chi.Router, userUsecase user.UseCase,
+	gameRepo game.Repository, userRepo user.Repository) {
+	handler := &UserHandler{userUsecase: userUsecase, gameRepo: gameRepo,
+		userRepo: userRepo}
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", handler.listUsers)
 		r.Post("/", handler.addUser)
@@ -37,13 +40,13 @@ func (uh *UserHandler) listUsers(w http.ResponseWriter, r *http.Request) {
 		usernames[0] = ""
 	}
 	name := usernames[0]
-	users := uh.userUsecase.ListUser(name)
+	users := uh.userRepo.ListUser(name)
 	json.NewEncoder(w).Encode(users)
 }
 
 func (uh *UserHandler) listUserGames(w http.ResponseWriter, r *http.Request) {
 	userId := utils.StringToInt(chi.URLParam(r, "id"))
-	games := uh.gameUsecase.ListGame(userId)
+	games := uh.gameRepo.ListGame(userId)
 	json.NewEncoder(w).Encode(games)
 }
 

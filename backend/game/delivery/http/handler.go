@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/alissongaliza/BlackjackInGo/backend/models"
-
 	"github.com/alissongaliza/BlackjackInGo/backend/game"
 	"github.com/alissongaliza/BlackjackInGo/backend/user"
 	"github.com/alissongaliza/BlackjackInGo/utils"
@@ -16,10 +14,14 @@ import (
 type GameHandler struct {
 	gameUsecase game.UseCase
 	userUsecase user.UseCase
+	userRepo    user.Repository
+	gameRepo    game.Repository
 }
 
-func NewGameHandler(r chi.Router, gameUsecase game.UseCase, userUsecase user.UseCase) {
-	handler := &GameHandler{gameUsecase: gameUsecase, userUsecase: userUsecase}
+func NewGameHandler(r chi.Router, gameUsecase game.UseCase,
+	userUsecase user.UseCase, userRepo user.Repository, gameRepo game.Repository) {
+	handler := &GameHandler{gameUsecase: gameUsecase, userUsecase: userUsecase,
+		userRepo: userRepo, gameRepo: gameRepo}
 	r.Route("/games", func(r chi.Router) {
 		r.Get("/", handler.listGames)
 		r.Post("/", handler.startGame)
@@ -34,7 +36,7 @@ func NewGameHandler(r chi.Router, gameUsecase game.UseCase, userUsecase user.Use
 
 func (gh *GameHandler) listGames(w http.ResponseWriter, r *http.Request) {
 	// 0 means dont filter by user
-	games := gh.gameUsecase.ListGame(0)
+	games := gh.gameRepo.ListGame(0)
 	json.NewEncoder(w).Encode(games)
 }
 
@@ -55,7 +57,7 @@ func (gh *GameHandler) startGame(w http.ResponseWriter, r *http.Request) {
 		panic(fmt.Sprintf("User of id %d not in the database.", request.UserId))
 	}
 	userIsValid := gh.userUsecase.IsUserValid(request.UserId)
-	if user := gh.userUsecase.GetUser(request.UserId); userIsValid {
+	if user := gh.userRepo.GetUser(request.UserId); userIsValid {
 		game := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet)
 		game = gh.gameUsecase.StartNewGame(game)
 		json.NewEncoder(w).Encode(game)
