@@ -4,7 +4,7 @@ import "github.com/alissongaliza/BlackjackInGo/backend/models"
 
 type Repository interface {
 	CreateUser(user models.User) models.User
-	GetUser(userId int) models.User
+	GetUser(userId int) (models.User, error)
 	ListUser(name string) []models.User
 	UpdateUser(user models.User) models.User
 	GetNextValidUserId() int

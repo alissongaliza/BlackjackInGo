@@ -49,14 +49,14 @@ func (imur *inMemoryUserRepository) CreateUser(user models.User) models.User {
 	return user
 }
 
-func (imur *inMemoryUserRepository) GetUser(id int) models.User {
+func (imur *inMemoryUserRepository) GetUser(id int) (models.User, error) {
 	users := imur.Db
 
 	user, ok := users[id]
 	if !ok {
-		panic(fmt.Sprintf("User of id %d not found", id))
+		return models.User{}, fmt.Errorf("User of id %d not found", id)
 	}
-	return user
+	return user, nil
 }
 
 func (imur *inMemoryUserRepository) ListUser(username string) []models.User {

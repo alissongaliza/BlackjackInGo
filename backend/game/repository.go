@@ -6,7 +6,7 @@ import (
 
 type Repository interface {
 	CreateGame(game models.Game) models.Game
-	GetGame(gameId int) models.Game
+	GetGame(gameId int) (models.Game, error)
 	ListGame(userId int) []models.Game
 	UpdateGame(game models.Game) models.Game
 	CreateHand() models.Hand

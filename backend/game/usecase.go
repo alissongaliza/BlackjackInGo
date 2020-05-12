@@ -6,7 +6,7 @@ import (
 )
 
 type UseCase interface {
-	CreateGame(user models.User, dif utils.Difficulty, bet int) models.Game
-	StartNewGame(game models.Game) models.Game
-	ContinueGame(game models.Game) models.Game
+	CreateGame(user models.User, dif utils.Difficulty, bet int) (models.Game, error)
+	StartNewGame(game models.Game) (models.Game, error)
+	ContinueGame(game models.Game) (models.Game, error)
 }

@@ -53,37 +53,65 @@ func (gh *GameHandler) startGame(w http.ResponseWriter, r *http.Request) {
 	// }()
 	var request utils.GameCreateRequest
 	json.NewDecoder(r.Body).Decode(&request)
-	user := gh.userRepo.GetUser(request.UserId)
-	if !gh.userUsecase.IsUserValid(user) {
-		panic(fmt.Sprintf("User of id %d not in the database.", request.UserId))
+	if user, err := gh.userRepo.GetUser(request.UserId); err != nil {
+		json.NewEncoder(w).Encode(err)
+	} else {
+		isValid, err2 := gh.userUsecase.IsUserValid(user)
+		if err2 != nil {
+			json.NewEncoder(w).Encode(err2)
+		} else if !isValid {
+			panic(fmt.Sprintf("User of id %d not in the database.", request.UserId))
+		}
+		if game, err3 := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet); err3 != nil {
+			json.NewEncoder(w).Encode(err3)
+		} else {
+			var err4 error
+			if game, err4 = gh.gameUsecase.StartNewGame(game); err4 != nil {
+				json.NewEncoder(w).Encode(err4)
+			} else {
+				json.NewEncoder(w).Encode(game)
+			}
+		}
 	}
-	game := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet)
-	game = gh.gameUsecase.StartNewGame(game)
-	json.NewEncoder(w).Encode(game)
 
 }
 
 func (gh *GameHandler) continueGame(w http.ResponseWriter, r *http.Request) {
 	gameId := utils.StringToInt(chi.URLParam(r, "id"))
-	game := gh.gameRepo.GetGame(gameId)
-	game = gh.gameUsecase.ContinueGame(game)
-
+	game, err := gh.gameRepo.GetGame(gameId)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+	}
+	game, err2 := gh.gameUsecase.ContinueGame(game)
+	if err2 != nil {
+		json.NewEncoder(w).Encode(err2)
+	}
 	json.NewEncoder(w).Encode(game)
+
 }
 
 func (gh *GameHandler) play(w http.ResponseWriter, r *http.Request) {
 	gameId := utils.StringToInt(chi.URLParam(r, "id"))
 	var body utils.UserActionRequest
 	json.NewDecoder(r.Body).Decode(&body)
-	game := gh.gameRepo.GetGame(gameId)
-	switch body.Action {
-	case utils.Hit:
-		game = gh.userUsecase.Hit(game, true)
-	case utils.Stand:
-		game = gh.userUsecase.Stand(game)
-	case utils.DoubleDown:
-		game = gh.userUsecase.DoubleDown(game)
+	if game, err := gh.gameRepo.GetGame(gameId); err != nil {
+		json.NewEncoder(w).Encode(err)
+	} else {
+
+		var err error
+		switch body.Action {
+		case utils.Hit:
+			game, err = gh.userUsecase.Hit(game, true)
+		case utils.Stand:
+			game = gh.userUsecase.Stand(game)
+		case utils.DoubleDown:
+			game, err = gh.userUsecase.DoubleDown(game)
+		}
+		if err != nil {
+			json.NewEncoder(w).Encode(err)
+		} else {
+			json.NewEncoder(w).Encode(game)
+		}
 	}
-	json.NewEncoder(w).Encode(game)
 
 }

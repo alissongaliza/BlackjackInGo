@@ -31,15 +31,18 @@ func (uuc userUsecase) CreateUser(name string, age int) models.User {
 	return uuc.userRepo.CreateUser(user)
 }
 
-func (uuc userUsecase) IsUserValid(user models.User) bool {
-	user = uuc.userRepo.GetUser(user.Id)
-	return user.Age >= 18
+func (uuc userUsecase) IsUserValid(user models.User) (bool, error) {
+	var err error
+	if user, err = uuc.userRepo.GetUser(user.Id); err != nil {
+		return false, err
+	}
+	return user.Age >= 18, nil
 }
 
-func (uuc userUsecase) Hit(game models.Game, faceUp bool) models.Game {
+func (uuc userUsecase) Hit(game models.Game, faceUp bool) (models.Game, error) {
 	// fmt.Printf("user %d hits!", game.User.Id)
 	if game.GameState != utils.Playing {
-		panic(fmt.Sprintf("Game is already over. User %s", game.GameState))
+		return models.Game{}, fmt.Errorf("Game is already over. User %s", game.GameState)
 	}
 	//pop an element from the cards slice
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
@@ -58,7 +61,7 @@ func (uuc userUsecase) Hit(game models.Game, faceUp bool) models.Game {
 		game.GameState = utils.Lost
 	}
 	// fmt.Println("user hand", game.User.Hand, game.GameState)
-	return uuc.gameRepo.UpdateGame(game)
+	return uuc.gameRepo.UpdateGame(game), nil
 }
 
 func (uuc userUsecase) Stand(game models.Game) models.Game {
@@ -69,18 +72,21 @@ func (uuc userUsecase) Stand(game models.Game) models.Game {
 	return uuc.dealerUsecase.AutoPlay(game)
 }
 
-func (uuc userUsecase) DoubleDown(game models.Game) models.Game {
+func (uuc userUsecase) DoubleDown(game models.Game) (models.Game, error) {
 	// fmt.Println("user doubleDowns!")
 	if len(game.User.Hand.Cards) != 2 {
-		panic(`User can't Double Down. This move is only 
+		return models.Game{}, fmt.Errorf(`User can't Double Down. This move is only 
 		available when he only has the first 2 starting cards`)
 	} else if game.User.Chips < game.Bet {
-		panic(`User can't Double Down. His current chips balance is lower than necessary`)
+		return models.Game{}, fmt.Errorf(`User can't Double Down. His current chips balance is lower than necessary`)
 	}
 	game.User.Chips -= game.Bet
 	game.Bet += game.Bet
-	game = uuc.Hit(game, true)
+	var err error
+	if game, err = uuc.Hit(game, true); err != nil {
+		return models.Game{}, err
+	}
 	game.LastUserAction = utils.DoubleDown
 	//call dealers turn
-	return uuc.dealerUsecase.AutoPlay(game)
+	return uuc.dealerUsecase.AutoPlay(game), nil
 }
