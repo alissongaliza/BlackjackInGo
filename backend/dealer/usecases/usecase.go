@@ -45,20 +45,20 @@ func (duc dealerUsecase) AutoPlay(currentGame models.Game) models.Game {
 	currentGame.Dealer.Hand.RecalculateScore()
 	for currentGame.GameState == utils.Playing {
 		if currentGame.LastDealerAction == utils.Stand {
-			currentGame = duc.Stand(currentGame.Id)
+			currentGame = duc.Stand(currentGame)
 		} else {
 			if currentGame.Dealer.Difficulty == utils.Broken {
 				if currentGame.Dealer.Player.Hand.Score <= 17 &&
 					currentGame.User.Hand.Score > currentGame.User.Hand.Score {
-					currentGame = duc.Hit(currentGame.Id, true)
+					currentGame = duc.Hit(currentGame, true)
 				} else {
-					currentGame = duc.Stand(currentGame.Id)
+					currentGame = duc.Stand(currentGame)
 				}
 			} else {
 				if currentGame.Dealer.Player.Hand.Score <= 17 {
-					currentGame = duc.Hit(currentGame.Id, true)
+					currentGame = duc.Hit(currentGame, true)
 				} else {
-					currentGame = duc.Stand(currentGame.Id)
+					currentGame = duc.Stand(currentGame)
 				}
 			}
 		}
@@ -68,9 +68,8 @@ func (duc dealerUsecase) AutoPlay(currentGame models.Game) models.Game {
 	return currentGame
 }
 
-func (duc dealerUsecase) Hit(gameId int, faceUp bool) models.Game {
+func (duc dealerUsecase) Hit(game models.Game, faceUp bool) models.Game {
 	fmt.Println("Dealer hit reached")
-	game := duc.gameRepo.GetGame(gameId)
 	//pop an element from the cards array
 	index := utils.GetRandomNumber(0, len(game.Cards)-1)
 	card := game.Cards[index]
@@ -93,9 +92,8 @@ func (duc dealerUsecase) Hit(gameId int, faceUp bool) models.Game {
 	return duc.gameRepo.UpdateGame(game)
 }
 
-func (duc dealerUsecase) Stand(gameId int) (game models.Game) {
+func (duc dealerUsecase) Stand(game models.Game) models.Game {
 	fmt.Println("Dealer stands!")
-	game = duc.gameRepo.GetGame(gameId)
 	game.LastDealerAction = utils.Stand
 	if game.User.Hand.Score > game.Dealer.Hand.Score || game.Dealer.Hand.Score > 21 {
 		//user won

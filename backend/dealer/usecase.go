@@ -8,6 +8,6 @@ import (
 type UseCase interface {
 	CreateDealer(dif utils.Difficulty) models.Dealer
 	AutoPlay(models.Game) models.Game
-	Hit(gameId int, faceUp bool) (game models.Game)
-	Stand(gameId int) (game models.Game)
+	Hit(game models.Game, faceUp bool) models.Game
+	Stand(game models.Game) models.Game
 }

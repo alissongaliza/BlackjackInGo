@@ -39,37 +39,16 @@ func (guc gameUsecase) CreateGame(user models.User, dif utils.Difficulty, bet in
 	return guc.gameRepo.CreateGame(game)
 }
 
-func (guc gameUsecase) GetGame(gameId int) models.Game {
-	return guc.gameRepo.GetGame(gameId)
-}
-
-func (guc gameUsecase) ListGame(userId int) []models.Game {
-	return guc.gameRepo.ListGame(userId)
-}
-
-func (guc gameUsecase) UpdateGame(game models.Game) models.Game {
-	return guc.gameRepo.UpdateGame(game)
-}
-
-func (guc gameUsecase) IsGameValid(gameId int) bool {
-	game := guc.gameRepo.GetGame(gameId)
-	return game.Id > 0
-}
-
-func (guc gameUsecase) CreateHand() models.Hand {
-	return guc.CreateHand()
-}
-
 func (guc gameUsecase) StartNewGame(game models.Game) models.Game {
 	game.GameState = utils.Playing
 	game.User.Chips -= game.Bet
 	// due to not handling user db and game db the right way
 	game = guc.gameRepo.UpdateGame(game)
 	game.User = guc.userRepo.UpdateUser(game.User)
-	game = guc.userUsecase.Hit(game.Id, true)
-	game = guc.userUsecase.Hit(game.Id, true)
-	game = guc.dealerUsecase.Hit(game.Id, true)
-	game = guc.dealerUsecase.Hit(game.Id, false)
+	game = guc.userUsecase.Hit(game, true)
+	game = guc.userUsecase.Hit(game, true)
+	game = guc.dealerUsecase.Hit(game, true)
+	game = guc.dealerUsecase.Hit(game, false)
 	//set the dealer's last given card face down and recalculate score
 	dealerHand := &game.Dealer.Hand
 	dealerHand.Cards[1].IsFaceUp = false

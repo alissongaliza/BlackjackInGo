@@ -53,20 +53,19 @@ func (gh *GameHandler) startGame(w http.ResponseWriter, r *http.Request) {
 	// }()
 	var request utils.GameCreateRequest
 	json.NewDecoder(r.Body).Decode(&request)
-	if !gh.userUsecase.IsUserValid(request.UserId) {
+	user := gh.userRepo.GetUser(request.UserId)
+	if !gh.userUsecase.IsUserValid(user) {
 		panic(fmt.Sprintf("User of id %d not in the database.", request.UserId))
 	}
-	userIsValid := gh.userUsecase.IsUserValid(request.UserId)
-	if user := gh.userRepo.GetUser(request.UserId); userIsValid {
-		game := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet)
-		game = gh.gameUsecase.StartNewGame(game)
-		json.NewEncoder(w).Encode(game)
-	}
+	game := gh.gameUsecase.CreateGame(user, request.Dif, request.Bet)
+	game = gh.gameUsecase.StartNewGame(game)
+	json.NewEncoder(w).Encode(game)
+
 }
 
 func (gh *GameHandler) continueGame(w http.ResponseWriter, r *http.Request) {
 	gameId := utils.StringToInt(chi.URLParam(r, "id"))
-	game := gh.gameUsecase.GetGame(gameId)
+	game := gh.gameRepo.GetGame(gameId)
 	game = gh.gameUsecase.ContinueGame(game)
 
 	json.NewEncoder(w).Encode(game)
@@ -76,14 +75,14 @@ func (gh *GameHandler) play(w http.ResponseWriter, r *http.Request) {
 	gameId := utils.StringToInt(chi.URLParam(r, "id"))
 	var body utils.UserActionRequest
 	json.NewDecoder(r.Body).Decode(&body)
-	var game models.Game
+	game := gh.gameRepo.GetGame(gameId)
 	switch body.Action {
 	case utils.Hit:
-		game = gh.userUsecase.Hit(gameId, true)
+		game = gh.userUsecase.Hit(game, true)
 	case utils.Stand:
-		game = gh.userUsecase.Stand(gameId)
+		game = gh.userUsecase.Stand(game)
 	case utils.DoubleDown:
-		game = gh.userUsecase.DoubleDown(gameId)
+		game = gh.userUsecase.DoubleDown(game)
 	}
 	json.NewEncoder(w).Encode(game)
 

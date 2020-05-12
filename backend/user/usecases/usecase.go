@@ -31,14 +31,13 @@ func (uuc userUsecase) CreateUser(name string, age int) models.User {
 	return uuc.userRepo.CreateUser(user)
 }
 
-func (uuc userUsecase) IsUserValid(userId int) bool {
-	user := uuc.userRepo.GetUser(userId)
+func (uuc userUsecase) IsUserValid(user models.User) bool {
+	user = uuc.userRepo.GetUser(user.Id)
 	return user.Age >= 18
 }
 
-func (uuc userUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
-	game = uuc.gameRepo.GetGame(gameId)
-	fmt.Printf("user %d hits!", game.User.Id)
+func (uuc userUsecase) Hit(game models.Game, faceUp bool) models.Game {
+	// fmt.Printf("user %d hits!", game.User.Id)
 	if game.GameState != utils.Playing {
 		panic(fmt.Sprintf("Game is already over. User %s", game.GameState))
 	}
@@ -58,24 +57,20 @@ func (uuc userUsecase) Hit(gameId int, faceUp bool) (game models.Game) {
 	if hand.Score > 21 {
 		game.GameState = utils.Lost
 	}
-	game = uuc.gameRepo.UpdateGame(game)
 	// fmt.Println("user hand", game.User.Hand, game.GameState)
-	return
+	return uuc.gameRepo.UpdateGame(game)
 }
 
-func (uuc userUsecase) Stand(gameId int) (game models.Game) {
-	game = uuc.gameRepo.GetGame(gameId)
+func (uuc userUsecase) Stand(game models.Game) models.Game {
 	// fmt.Printf("user %d stands!", game.User.Id)
 	game.LastUserAction = utils.Stand
 	uuc.gameRepo.UpdateGame(game)
 	//call dealers turn
-	game = uuc.dealerUsecase.AutoPlay(game)
-	return
+	return uuc.dealerUsecase.AutoPlay(game)
 }
 
-func (uuc userUsecase) DoubleDown(gameId int) (game models.Game) {
+func (uuc userUsecase) DoubleDown(game models.Game) models.Game {
 	// fmt.Println("user doubleDowns!")
-	game = uuc.gameRepo.GetGame(gameId)
 	if len(game.User.Hand.Cards) != 2 {
 		panic(`User can't Double Down. This move is only 
 		available when he only has the first 2 starting cards`)
@@ -84,9 +79,8 @@ func (uuc userUsecase) DoubleDown(gameId int) (game models.Game) {
 	}
 	game.User.Chips -= game.Bet
 	game.Bet += game.Bet
-	game = uuc.Hit(gameId, true)
+	game = uuc.Hit(game, true)
 	game.LastUserAction = utils.DoubleDown
 	//call dealers turn
-	game = uuc.dealerUsecase.AutoPlay(game)
-	return
+	return uuc.dealerUsecase.AutoPlay(game)
 }
